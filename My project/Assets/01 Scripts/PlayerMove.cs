@@ -78,13 +78,17 @@ public class PlayerMove : MonoBehaviour
 		
 	}
 
-	public bool SetItem(Carryable item)
+	public void SetItem(Carryable item)
 	{
 		if (carriedItem)
-			return false;
-		carriedItem = item;
-		item.transform.SetParent(transform);
-		item.transform.localPosition = new Vector3(0, -0.1f, 0);
-		return true;
+		{
+			if (item) DestroyImmediate(item.gameObject);
+		}
+		else
+		{
+			carriedItem = item;
+			item.transform.SetParent(transform);
+			item.transform.localPosition = new Vector3(0, -0.1f, 0);
+		}
 	}
 }

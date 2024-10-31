@@ -7,10 +7,24 @@ public class Food : Carryable
 {
 	public int startPrice;
 	public int Price { get; private set; }
+	public int CurrentCount { get; private set; }
+	public int maxCount;
 
+	public void Increase()
+	{
+		CurrentCount++;
+	}
+	
+	public void DeCrease()
+	{
+		CurrentCount--;
+	}
+	
 	private void Reset()
 	{
 		startPrice = 10;
+		CurrentCount = 0;
+		maxCount = 4;
 	}
 
 	public void Upgrade()

@@ -2,11 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class Countertop : InteractiveObject, Creatable
-{
-	public float createInverval;
+{ 
+	public float createInterval;
 	public Food foodPrefab;
 	public Food foodObject = null;
 	public int upgradeMaxFood;
@@ -14,40 +13,24 @@ public class Countertop : InteractiveObject, Creatable
 	
 	private int _maxFood;
 	private int _currentFoodCount;
-	public int CurrentFoodCount 
-	{
-		get => _currentFoodCount;
-		private set
-		{
-			if (value < 0)
-				_currentFoodCount = 0;
-			else if (value > _maxFood)
-				_currentFoodCount = _maxFood;
-			else
-				_currentFoodCount = value;
-			
-			if (value == 0)
-				foodObject = null;
 
-		} 
-	}
 	private Coroutine _createFoodCoroutine;
 
 	private void Awake()
 	{
 		_maxFood = 4;
-		CurrentFoodCount = 0;
+		_currentFoodCount = 0;
 	}
 	
 	public void Upgrade()
 	{
 		_maxFood += upgradeMaxFood;
-		createInverval = upgradeInterval;
+		createInterval = upgradeInterval;
 	}
 
 	private void Start()
-	{
-		_createFoodCoroutine = StartCoroutine(CreateFoodCoroutine(createInverval));
+	{	
+		_createFoodCoroutine = StartCoroutine(CreateFoodCoroutine(createInterval));
 	}
 
 	private void Reset()
@@ -57,27 +40,19 @@ public class Countertop : InteractiveObject, Creatable
 			new InteractionZone {dir = Vector2.left, rayDist = 1f, layer = LayerName.Player},
 			new InteractionZone {dir = Vector2.right, rayDist = 1f, layer = LayerName.Player},
 			new InteractionZone {dir = Vector2.down, rayDist = 1f, layer = LayerName.Player},
-			new InteractionZone {dir = Vector2.down + Vector2.left, rayDist = 1f, layer = LayerName.Player},
 			new InteractionZone {dir = Vector2.down + Vector2.right, rayDist = 1f, layer = LayerName.Player},
-			// new InteractionZone {dir = Vector2.left, rayDist = 1f, layer = LayerName.Villain},
-			// new InteractionZone {dir = Vector2.right, rayDist = 1f, layer = LayerName.Villain},
-			// new InteractionZone {dir = Vector2.down, rayDist = 1f, layer = LayerName.Villain},
-			// new InteractionZone {dir = Vector2.down + Vector2.left, rayDist = 1f, layer = LayerName.Villain},
-			// new InteractionZone {dir = Vector2.down + Vector2.right, rayDist = 1f, layer = LayerName.Villain},
 		};
 	}
 
 	private void Update()
 	{
-		Vector3 forward = transform.TransformDirection(Vector3.up) * 10;
-		Debug.DrawRay(transform.position, forward, Color.green);
-
-		List<RaycastHit2D> hits = new();
+		List<RaycastHit2D> hits = new List<RaycastHit2D>();
 		interZones.ForEach(interZone =>
 			{
 				RaycastHit2D hit = FindInteractableAtRay(interZone);
 				if (hit)
 					hits.Add(hit);
+				Debug.DrawRay(transform.position, interZone.dir.normalized * interZone.rayDist, Color.red);
 			}
 		);
 
@@ -86,13 +61,19 @@ public class Countertop : InteractiveObject, Creatable
 			switch (item.collider.tag)
 			{
 				case "Player":
+					if (_currentFoodCount <= 0)
+						break;
 					PlayerMove player = item.transform.GetComponent<PlayerMove>();
-					if (player)
+					if (player == null || player?.carriedItem != null && player.carriedItem is not Food)
+						break;
+					if (player.carriedItem == null)
+						player.SetItem(Instantiate(foodPrefab, transform.position, Quaternion.identity, transform));
+					Food food = player.carriedItem as Food;
+					while (food && _currentFoodCount > 0 && food.maxCount > food.CurrentCount)
 					{
-						if (player.carriedItem == null)
-							player.SetItem(GetFood());
+						food.Increase();
+						DecreaseFoodCount();
 					}
-					Debug.Log("Player");
 					break;
 				case "Villain":
 					Debug.Log("Villain");
@@ -105,42 +86,47 @@ public class Countertop : InteractiveObject, Creatable
 
 	public Carryable GetFood()
 	{
-		Carryable ret = foodObject;
-		if (CurrentFoodCount <= 0)
+		if (foodObject == null)
 			return null;
-		CurrentFoodCount--;
-		if (CurrentFoodCount == 0)
-			foodObject = null;
-		
-		return ret;
+		Food result = foodObject;
+		foodObject = null;
+		DecreaseFoodCount();
+		return result;
 	}
-
-	public int GetMoreFood()
+	
+	public void IncreaseFoodCount()
 	{
-		if (CurrentFoodCount > 0)
+		_currentFoodCount++;
+	}
+	public void DecreaseFoodCount()
+	{
+		if (_createFoodCoroutine == null)
 		{
-			if (CurrentFoodCount == upgradeMaxFood)
-			{
-				_createFoodCoroutine = StartCoroutine(CreateFoodCoroutine(createInverval));
-			}
-			CurrentFoodCount--;
-			return 1;
+			_createFoodCoroutine = StartCoroutine(CreateFoodCoroutine(createInterval));
 		}
-		return 0;
+		_currentFoodCount--;
+		if (_currentFoodCount <= 0)
+		{
+			_currentFoodCount = 0;
+			Destroy(foodObject.gameObject);
+		}
 	}
 	
 	private IEnumerator CreateFoodCoroutine(float interval)
 	{
-		while (CurrentFoodCount < _maxFood)
+		while (_currentFoodCount < _maxFood)
 		{
 			yield return new WaitForSeconds(interval);
 			Create();
 		}
+		_createFoodCoroutine = null;
 	}
+	
 	public void Create()
 	{
 		if (!foodObject)
 			foodObject = Instantiate(foodPrefab, transform.position, Quaternion.identity, transform);
-		CurrentFoodCount++;
+		IncreaseFoodCount();
 	}
+	
 }

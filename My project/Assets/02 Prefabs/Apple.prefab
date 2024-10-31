@@ -120,3 +120,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startPrice: 10
+  currentCount: 0
+  maxCount: 10
