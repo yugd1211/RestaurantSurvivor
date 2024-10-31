@@ -8,11 +8,11 @@ public class PlayerMove : MonoBehaviour
 {
 	public float moveSpeed;
 	public Animator anim;
-	
-	
 	private Coroutine _moveCoroutine;
+
 	private Vector2 _moveDir;
 	private bool _isMoving = true;
+	public Carryable carriedItem;
 
 	private void Reset()
 	{
@@ -73,4 +73,18 @@ public class PlayerMove : MonoBehaviour
 		}
 	}
 
+	public void PickUpCarriedItem()
+	{
+		
+	}
+
+	public bool SetItem(Carryable item)
+	{
+		if (carriedItem)
+			return false;
+		carriedItem = item;
+		item.transform.SetParent(transform);
+		item.transform.localPosition = new Vector3(0, -0.1f, 0);
+		return true;
+	}
 }

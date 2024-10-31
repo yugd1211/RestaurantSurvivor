@@ -4149,6 +4149,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1c2d8dc3ca8a493690dd5ce37478794, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isInteractable: 0
   interZones:
   - dir: {x: -1, y: 0}
     rayDist: 1
@@ -4174,7 +4175,11 @@ MonoBehaviour:
   - dir: {x: 1, y: -1}
     rayDist: 1
     layer: 2
-  interval: 1
+  createInverval: 199
+  foodPrefab: {fileID: 0}
+  foodObject: {fileID: 0}
+  upgradeMaxFood: 0
+  upgradeInterval: 0
 --- !u!1 &1516270317
 GameObject:
   m_ObjectHideFlags: 0
@@ -4462,6 +4467,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 2
   anim: {fileID: 1770028180}
+  carriedItem: {fileID: 0}
 --- !u!61 &1770028184
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -4812,6 +4818,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1c2d8dc3ca8a493690dd5ce37478794, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isInteractable: 0
   interZones:
   - dir: {x: -1, y: 0}
     rayDist: 1
@@ -4837,7 +4844,11 @@ MonoBehaviour:
   - dir: {x: 1, y: -1}
     rayDist: 1
     layer: 2
-  interval: 1
+  createInverval: 199
+  foodPrefab: {fileID: 0}
+  foodObject: {fileID: 0}
+  upgradeMaxFood: 0
+  upgradeInterval: 0
 --- !u!1 &1857830305
 GameObject:
   m_ObjectHideFlags: 0
@@ -5148,6 +5159,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1c2d8dc3ca8a493690dd5ce37478794, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isInteractable: 0
   interZones:
   - dir: {x: -1, y: 0}
     rayDist: 1
@@ -5173,7 +5185,11 @@ MonoBehaviour:
   - dir: {x: 1, y: -1}
     rayDist: 1
     layer: 2
-  interval: 1
+  createInverval: 199
+  foodPrefab: {fileID: 0}
+  foodObject: {fileID: 0}
+  upgradeMaxFood: 0
+  upgradeInterval: 0
 --- !u!1 &2074999703
 GameObject:
   m_ObjectHideFlags: 0
@@ -5577,6 +5593,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1c2d8dc3ca8a493690dd5ce37478794, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isInteractable: 0
   interZones:
   - dir: {x: -1, y: 0}
     rayDist: 1
@@ -5602,7 +5619,11 @@ MonoBehaviour:
   - dir: {x: 1, y: -1}
     rayDist: 1
     layer: 2
-  interval: 1
+  createInverval: 1
+  foodPrefab: {fileID: 3080800038674911264, guid: dcd1d5c761ac246d08d9c89ef970e625, type: 3}
+  foodObject: {fileID: 0}
+  upgradeMaxFood: 4
+  upgradeInterval: 4
 --- !u!1 &2128699146
 GameObject:
   m_ObjectHideFlags: 0
