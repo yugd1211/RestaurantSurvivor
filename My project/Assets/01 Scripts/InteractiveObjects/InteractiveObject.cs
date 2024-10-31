@@ -33,4 +33,24 @@ public abstract class InteractiveObject : MonoBehaviour
 	{
 		return Physics2D.Raycast(transform.position, interZone.dir, interZone.rayDist, LayerMask.GetMask(interZone.layer.ToString()));
 	}
+	
+	protected List<RaycastHit2D> GetInteracObjsInRayPath()
+	{		
+		List<RaycastHit2D> hits = new List<RaycastHit2D>();
+		interZones.ForEach(interZone =>
+			{
+				RaycastHit2D hit = FindInteractableAtRay(interZone);
+				if (hit)
+					hits.Add(hit);
+			}
+		);
+		return hits;
+	}
+
+	protected void DisplayRay()
+	{
+		interZones.ForEach(interZone =>
+			Debug.DrawRay(transform.position, interZone.dir.normalized * interZone.rayDist, Color.red)
+		);
+	}
 }

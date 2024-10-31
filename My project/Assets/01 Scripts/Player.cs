@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class PlayerMove : MonoBehaviour
+public class Player : MonoBehaviour
 {
 	public float moveSpeed;
 	public Animator anim;
@@ -27,7 +27,6 @@ public class PlayerMove : MonoBehaviour
 	private void Update()
 	{
 		_moveDir = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")).normalized;
-
 		if (_isMoving)
 			Move();
 	}
@@ -45,6 +44,8 @@ public class PlayerMove : MonoBehaviour
 				anim.SetTrigger("LeftTrigger");
 			else if (_moveDir == Vector2.right)
 				anim.SetTrigger("RightTrigger");
+			else
+				return;
 		if (CheckPath(_moveDir))
 			return;
 

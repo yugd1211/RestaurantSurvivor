@@ -46,15 +46,8 @@ public class Countertop : InteractiveObject, Creatable
 
 	private void Update()
 	{
-		List<RaycastHit2D> hits = new List<RaycastHit2D>();
-		interZones.ForEach(interZone =>
-			{
-				RaycastHit2D hit = FindInteractableAtRay(interZone);
-				if (hit)
-					hits.Add(hit);
-				Debug.DrawRay(transform.position, interZone.dir.normalized * interZone.rayDist, Color.red);
-			}
-		);
+		List<RaycastHit2D> hits = GetInteracObjsInRayPath();
+		DisplayRay();
 
 		foreach (RaycastHit2D item in hits)
 		{
@@ -63,7 +56,7 @@ public class Countertop : InteractiveObject, Creatable
 				case "Player":
 					if (_currentFoodCount <= 0)
 						break;
-					PlayerMove player = item.transform.GetComponent<PlayerMove>();
+					Player player = item.transform.GetComponent<Player>();
 					if (player == null || player?.carriedItem != null && player.carriedItem is not Food)
 						break;
 					if (player.carriedItem == null)
