@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 
 public class PlayerMove : MonoBehaviour
 {
+	public float moveSpeed;
 	public Animator anim;
 	
 	
@@ -15,6 +16,7 @@ public class PlayerMove : MonoBehaviour
 
 	private void Reset()
 	{
+		moveSpeed = 2f;
 		anim = GetComponent<Animator>();
 	}
 	private void Start()
@@ -24,14 +26,14 @@ public class PlayerMove : MonoBehaviour
 
 	private void Update()
 	{
+		_moveDir = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")).normalized;
+
 		if (_isMoving)
 			Move();
 	}
 
 	private void Move()
 	{
-		_moveDir = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")).normalized;
-
 		if (_moveDir == Vector2.zero)
 			return;
 			// 방향에 따른 애니메이션 트리거 설정
@@ -53,7 +55,7 @@ public class PlayerMove : MonoBehaviour
 	bool CheckPath(Vector2 dir)
 	{
 		float rayDistance = 1f; // 레이 길이
-		RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, rayDistance, LayerMask.GetMask("Interaction")); 
+		RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, rayDistance, LayerMask.GetMask("Interactive")); 
 		if (hit.collider != null) 
 			return true;
 		return false;
@@ -66,7 +68,7 @@ public class PlayerMove : MonoBehaviour
 			yield return null;
 			if (_isMoving)
 				continue;
-			yield return new WaitForSeconds(0.5f);
+			yield return new WaitForSeconds(1 / moveSpeed);
 			_isMoving = true;
 		}
 	}
