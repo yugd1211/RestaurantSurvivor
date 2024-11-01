@@ -8,6 +8,10 @@ public class CashierDesk : InteractiveObject, Creatable
 {
 	public Money prefab;
 	public Money _money = null;
+	public Customer customer = null;
+	public float saleSpeed = 0.5f;
+	
+	private CashierTable _cashierTable;
 	private void Reset()
 	{
 		interZones = new List<InteractionZone>
@@ -16,10 +20,12 @@ public class CashierDesk : InteractiveObject, Creatable
 			new InteractionZone {dir = Vector2.up, rayDist = 1f, layer = LayerName.Player},
 			new InteractionZone {dir = Vector2.up + Vector2.right, rayDist = 1f, layer = LayerName.Player},
 		};
+		saleSpeed = 0.5f;
 	}
 
 	private void Start()
 	{
+		_cashierTable = FindObjectOfType<CashierTable>();
 		Create();
 	}
 
@@ -58,15 +64,33 @@ public class CashierDesk : InteractiveObject, Creatable
 
 						}
 					}
+					// 손님 상호 작용 영역
 					else
 					{
-						// 손님 상호 작용 영역
+						if (customer == null)
+							return;
+						if (_cashierTable == null)
+							return;
+						if (_cashierTable.food == null)
+							return;
+						while (customer.CurrentCount < customer.requiredCount)
+						{
+							if (_cashierTable.food.CurrentCount <= 0)
+							{
+								_cashierTable.food = null;
+								break;
+							}
+							_cashierTable.food.DeCrease();
+							customer.IncreaseFood();
+						}
 					}
 				}
 			}
 
 		});
 	}
+	
+	
 	
 	
 	public void Create()

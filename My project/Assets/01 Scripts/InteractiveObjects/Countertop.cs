@@ -2,12 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class Countertop : InteractiveObject, Creatable
 { 
 	public float createInterval;
-	public Food foodPrefab;
-	public Food foodObject = null;
+	public Food foodPrefab; 
+	public Food food = null;
 	public int upgradeMaxFood;
 	public int upgradeInterval;
 	
@@ -79,10 +80,10 @@ public class Countertop : InteractiveObject, Creatable
 
 	public Carryable GetFood()
 	{
-		if (foodObject == null)
+		if (food == null)
 			return null;
-		Food result = foodObject;
-		foodObject = null;
+		Food result = food;
+		food = null;
 		DecreaseFoodCount();
 		return result;
 	}
@@ -101,7 +102,7 @@ public class Countertop : InteractiveObject, Creatable
 		if (_currentFoodCount <= 0)
 		{
 			_currentFoodCount = 0;
-			Destroy(foodObject.gameObject);
+			Destroy(food.gameObject);
 		}
 	}
 	
@@ -117,8 +118,8 @@ public class Countertop : InteractiveObject, Creatable
 	
 	public void Create()
 	{
-		if (!foodObject)
-			foodObject = Instantiate(foodPrefab, transform.position, Quaternion.identity, transform);
+		if (!food)
+			food = Instantiate(foodPrefab, transform.position, Quaternion.identity, transform);
 		IncreaseFoodCount();
 	}
 	

@@ -3,12 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 
 public class Player : MonoBehaviour
 {
 	public float moveSpeed;
 	public Animator anim;
-	private Coroutine _moveCoroutine;
+	private Coroutine _moveCoroutine; 
+	private CashierTable _cashierTable;
 
 	private Vector2 _moveDir;
 	private bool _isMoving = true;
@@ -18,10 +20,13 @@ public class Player : MonoBehaviour
 	{
 		moveSpeed = 2f;
 		anim = GetComponent<Animator>();
+		_cashierTable = FindObjectOfType<CashierTable>();
 	}
 	private void Start()
 	{
 		_moveCoroutine = StartCoroutine(CoMovePossible());
+		_cashierTable = FindObjectOfType<CashierTable>();
+
 	}
 
 	private void Update()
@@ -46,7 +51,7 @@ public class Player : MonoBehaviour
 				anim.SetTrigger("RightTrigger");
 			else
 				return;
-		if (CheckPath(_moveDir))
+		if (!CheckPath(_moveDir))
 			return;
 
 		transform.position += new Vector3(_moveDir.x, _moveDir.y, 0);
@@ -58,8 +63,8 @@ public class Player : MonoBehaviour
 		float rayDistance = 1f; // 레이 길이
 		RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, rayDistance, LayerMask.GetMask("Interactive")); 
 		if (hit.collider != null) 
-			return true;
-		return false;
+			return false;
+		return true;
 	}
 
 	private IEnumerator CoMovePossible()

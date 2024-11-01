@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class CashierTable : InteractiveObject
 {
-	public Food prefab;
-	private Food _food = null;
+	public Food prefab; 
+	public Food food = null;
 	private void Reset()
 	{
 		interZones = new List<InteractionZone>
@@ -24,25 +25,18 @@ public class CashierTable : InteractiveObject
 			{
 				if (!player || player.carriedItem is not Food)
 					break;
-				if (!_food)
+				if (!food)
 				{
-					_food = Instantiate(prefab, transform.position, Quaternion.identity, transform);
-					_food.maxCount = 99;
+					food = Instantiate(prefab, transform.position, Quaternion.identity, transform);
+					food.maxCount = 99;
 				}
 				Food playerFood = player.carriedItem as Food;
 				while (playerFood.CurrentCount > 0)
 				{
-					if (_food.CurrentCount >= _food.maxCount)
+					if (food.CurrentCount >= food.maxCount)
 						break;
-					_food.Increase();
+					food.Increase();
 					playerFood.DeCrease();
-				}
-				if (playerFood.CurrentCount == 0)
-				{
-					Destroy(player.carriedItem.gameObject);
-					player.carriedItem = null;
-					
-
 				}
 			}
 		}
