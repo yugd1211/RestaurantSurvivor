@@ -25,7 +25,7 @@ public abstract class InteractiveObject : MonoBehaviour
 	public bool isInteractable;
 	public List<InteractionZone> interZones;
 
-	private void Awake()
+	protected virtual void Awake()
 	{
 		isInteractable = true;
 	}

@@ -27,15 +27,12 @@ public class CashierDesk : InteractiveObject, Creatable
 	{
 		List<RaycastHit2D> hits = GetInteracObjsInRayPath();
 		DisplayRay();
-		print(hits.Count);
 		hits.ForEach(item =>
 		{
 			if (item.transform != null)
 			{
-				print(item.transform);
 				if (item.transform.TryGetComponent(out Player player))
 				{
-					print(player);
 					// 돈영역
 					if (item.transform.position - transform.position == Vector3.left)
 					{
