@@ -5508,6 +5508,9 @@ MonoBehaviour:
   - dir: {x: 0, y: 1}
     rayDist: 1
     layer: 1
+  trashPrefab: {fileID: 8411474753146521639, guid: 518994b4647654b9c8d4ab87bcecb13e, type: 3}
+  customer: {fileID: 0}
+  deleteCount: 2
 --- !u!1 &2119496710
 GameObject:
   m_ObjectHideFlags: 0
