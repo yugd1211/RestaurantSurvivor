@@ -36,7 +36,8 @@ public class CashierDesk : InteractiveObject, Creatable
 					// 돈영역
 					if (item.transform.position - transform.position == Vector3.left)
 					{
-
+						if (_money == null)
+							return;
 						Money playerMoney = player.carriedItem as Money;
 						if (player.carriedItem == null)
 						{
