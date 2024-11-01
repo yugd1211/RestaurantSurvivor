@@ -27,15 +27,19 @@ public class CashierDesk : InteractiveObject, Creatable
 	{
 		List<RaycastHit2D> hits = GetInteracObjsInRayPath();
 		DisplayRay();
+		print(hits.Count);
 		hits.ForEach(item =>
 		{
 			if (item.transform != null)
 			{
+				print(item.transform);
 				if (item.transform.TryGetComponent(out Player player))
 				{
+					print(player);
 					// 돈영역
 					if (item.transform.position - transform.position == Vector3.left)
 					{
+
 						Money playerMoney = player.carriedItem as Money;
 						if (player.carriedItem == null)
 						{
@@ -44,14 +48,16 @@ public class CashierDesk : InteractiveObject, Creatable
 							_money.transform.localPosition = Vector3.zero;
 							_money = null;
 						}
-						else if (playerMoney != null)
+						else if (playerMoney != null && _money != null)
 						{
-							Destroy(_money.gameObject);
-							while (_money.CurrentCount > 0)
+							while (_money.CurrentCount > 0 && playerMoney.CurrentCount < playerMoney.maxCount)
 							{
-								playerMoney.Increase();
-	                            _money.DeCrease();
+								playerMoney.Increase(); 
+								_money.DeCrease();
 							}
+							if (_money.CurrentCount == 0)
+								Destroy(_money.gameObject);
+
 						}
 					}
 					else
