@@ -37,11 +37,6 @@ public class Customer : MonoBehaviour
 		food.spriteRenderer.enabled = false;
 	}
 
-	public void FindTable()
-	{
-		// table = FindObjectOfType<DiningTable>();
-	}
-
 	public void IncreaseFood()
 	{
 		food.Increase();

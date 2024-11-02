@@ -89,6 +89,9 @@ public class CashierDesk : InteractiveObject, Creatable
 								_cashierTable.food = null;
 								break;
 							}
+							if (money == null)
+								Create();
+							money.Increase();
 							_cashierTable.food.DeCrease();
 							customer.IncreaseFood();
 						}
