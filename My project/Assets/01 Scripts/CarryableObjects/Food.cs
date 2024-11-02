@@ -34,6 +34,7 @@ public class Food : Carryable
 		CurrentCount--;
 		if (CurrentCount <= 0)
 		{
+			print("Destroy");
 			Destroy(gameObject);
 		}
 	}

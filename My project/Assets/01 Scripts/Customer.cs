@@ -1,9 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using TMPro.EditorUtilities;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class Customer : MonoBehaviour
@@ -62,18 +60,6 @@ public class Customer : MonoBehaviour
 		table.isOccupied = true;
 		table.customer = this;
 	}
-	
-	// private void Update()
-	// {
-	// 	RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.left, 1f, LayerMask.GetMask("Interactive"));
-	// 	if (hit.collider == null)
-	// 		return;
-	// 	if (hit.collider.TryGetComponent(out DiningTable targetTable))
-	// 	{
-	// 		PickTable(targetTable);
-	// 		targetTable.customer = this;
-	// 	}
-	// }
 
 	public void GoToTable()
 	{
@@ -94,7 +80,8 @@ public class Customer : MonoBehaviour
 		{
 			if (hit.collider.CompareTag("DiningTable"))
 			{
-				PickTable(hit.collider.GetComponent<DiningTable>());
+				// hit.collider.GetComponent<DiningTable>().customer = this;
+				// PickTable(hit.collider.GetComponent<DiningTable>());
 			}
 		}
 	}

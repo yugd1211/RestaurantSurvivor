@@ -3,11 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class CashierDesk : InteractiveObject, Creatable
 {
-	public Money prefab;
-	public Money _money = null;
+	public Money prefab; 
+	public Money money = null;
 	public Customer customer = null;
 	public float saleSpeed = 0.5f;
 	
@@ -21,6 +22,14 @@ public class CashierDesk : InteractiveObject, Creatable
 			new InteractionZone {dir = Vector2.up + Vector2.right, rayDist = 1f, layer = LayerName.Player},
 		};
 		saleSpeed = 0.5f;
+	}
+	
+	public void SetCustomer(Customer customer)
+	{
+		this.customer = customer;
+		customer.transform.SetParent(transform);
+		customer.transform.position = transform.position + Vector3.down;
+		// customer.transform.localPosition = Vector3.down;
 	}
 
 	private void Start()
@@ -42,25 +51,25 @@ public class CashierDesk : InteractiveObject, Creatable
 					// 돈영역
 					if (item.transform.position - transform.position == Vector3.left)
 					{
-						if (_money == null)
+						if (money == null)
 							return;
 						Money playerMoney = player.carriedItem as Money;
 						if (player.carriedItem == null)
 						{
-							player.carriedItem = _money;
-							_money.transform.SetParent(player.transform);
-							_money.transform.localPosition = Vector3.zero;
-							_money = null;
+							player.carriedItem = money;
+							money.transform.SetParent(player.transform);
+							money.transform.localPosition = Vector3.zero;
+							money = null;
 						}
-						else if (playerMoney != null && _money != null)
+						else if (playerMoney != null && money != null)
 						{
-							while (_money.CurrentCount > 0 && playerMoney.CurrentCount < playerMoney.maxCount)
+							while (money.CurrentCount > 0 && playerMoney.CurrentCount < playerMoney.maxCount)
 							{
 								playerMoney.Increase(); 
-								_money.DeCrease();
+								money.DeCrease();
 							}
-							if (_money.CurrentCount == 0)
-								Destroy(_money.gameObject);
+							if (money.CurrentCount == 0)
+								Destroy(money.gameObject);
 
 						}
 					}
@@ -85,7 +94,8 @@ public class CashierDesk : InteractiveObject, Creatable
 						}
 						if (customer.food.CurrentCount == customer.requiredCount)
 						{
-							StartCoroutine(SearchAvailableTable());
+							print("StartCoroutine(SearchAvailableTable()) 시작");
+							StartCoroutine(SearchAvailableTableRoutine());
 						}
 					}
 				}
@@ -93,28 +103,32 @@ public class CashierDesk : InteractiveObject, Creatable
 		});
 	}
 
-	private IEnumerator SearchAvailableTable()
+	private IEnumerator SearchAvailableTableRoutine()
 	{
 		DiningTable table = null;
+		print("Search 1");
 		while (true)
 		{
 			if (TableManager.Instance.GetTable(out table))
 				break;
 			yield return new WaitForSeconds(1f);
 		}
+		print("Search 2");
 		customer.PickTable(table);
+		print("Search 3");
 		customer.GoToTable();
+		print("Search 4");
 		customer = null;
 		StopAllCoroutines();
 	}
 	
 	public void Create()
 	{
-		if (!_money)
+		if (!money)
 		{
-			_money = Instantiate(prefab, transform.position + Vector3.left, Quaternion.identity, transform);
-			_money.maxCount = 99;
+			money = Instantiate(prefab, transform.position + Vector3.left, Quaternion.identity, transform);
+			money.maxCount = 99;
 		}
-		_money.Increase();
+		money.Increase();
 	}
 }

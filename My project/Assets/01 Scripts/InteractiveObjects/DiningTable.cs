@@ -21,6 +21,13 @@ public class DiningTable : InteractiveObject, Creatable
 			new InteractionZone {dir = Vector2.up, rayDist = 1f, layer = LayerName.Customer},
 		};
 	}
+	
+	public bool IsAvailable()
+	{
+		if (isOccupied || _obj != null)
+			return false;
+		return true;
+	}
 
 	private void Update()
 	{
@@ -91,6 +98,8 @@ public class DiningTable : InteractiveObject, Creatable
 		}
 		_obj = null;
 		Create();
+		Destroy(customer.gameObject);
+		customer = null;
 	}
 
 	public void Create()
