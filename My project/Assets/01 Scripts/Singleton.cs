@@ -2,21 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Singleton : MonoBehaviour
+public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
 {
-	
-	private static Singleton _instance;
-	public static Singleton Instance
+	private static T _instance;
+	public static T Instance
 	{
 		get
 		{
 			if (_instance == null)
 			{
-				_instance = FindObjectOfType<Singleton>();
+				_instance = FindObjectOfType<T>();
 				if (_instance == null)
 				{
-					GameObject go = new GameObject("Singleton");
-					_instance = go.AddComponent<Singleton>();
+					GameObject go = new GameObject("T");
+					_instance = go.AddComponent<T>();
 				}
 			}
 			return _instance;
@@ -27,7 +26,7 @@ public class Singleton : MonoBehaviour
 	{
 		if (_instance == null)
 		{
-			_instance = this;
+			_instance = this as T;
 			DontDestroyOnLoad(gameObject);
 		}
 		else
