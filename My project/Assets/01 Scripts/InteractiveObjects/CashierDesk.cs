@@ -1,9 +1,6 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class CashierDesk : InteractiveObject, Creatable
 {
@@ -74,13 +71,10 @@ public class CashierDesk : InteractiveObject, Creatable
 						}
 					}
 					// 손님 상호 작용 영역
-					else
+					else if (item.transform.position - transform.position == Vector3.up ||
+							item.transform.position - transform.position == Vector3.up + Vector3.right)
 					{
-						if (customer == null)
-							return;
-						if (_cashierTable == null)
-							return;
-						if (_cashierTable.food == null)
+						if (customer == null || _cashierTable == null || _cashierTable.food == null)
 							return;
 						while (customer.CurrentCount < customer.requiredCount)
 						{
@@ -96,10 +90,7 @@ public class CashierDesk : InteractiveObject, Creatable
 							customer.IncreaseFood();
 						}
 						if (customer.food.CurrentCount == customer.requiredCount)
-						{
-							print("StartCoroutine(SearchAvailableTable()) 시작");
 							StartCoroutine(SearchAvailableTableRoutine());
-						}
 					}
 				}
 			}
@@ -109,18 +100,14 @@ public class CashierDesk : InteractiveObject, Creatable
 	private IEnumerator SearchAvailableTableRoutine()
 	{
 		DiningTable table = null;
-		print("Search 1");
 		while (true)
 		{
 			if (TableManager.Instance.GetTable(out table))
 				break;
 			yield return new WaitForSeconds(1f);
 		}
-		print("Search 2");
 		customer.PickTable(table);
-		print("Search 3");
 		customer.GoToTable();
-		print("Search 4");
 		customer = null;
 		StopAllCoroutines();
 	}

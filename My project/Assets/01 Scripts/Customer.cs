@@ -10,6 +10,8 @@ public class Customer : MonoBehaviour
 	public Food food;
 	public DiningTable table;
 	public int requiredCount;
+
+	private Collider2D _coll;
 	
 	private int _currentCount;
 	public int CurrentCount 
@@ -32,6 +34,13 @@ public class Customer : MonoBehaviour
 	}
 
 
+	private void Awake()
+	{
+		CurrentCount = 0;
+		requiredCount = Random.Range(1, 3);
+		_coll = GetComponent<Collider2D>();
+	}
+
 	private void Start()
 	{
 		food.spriteRenderer.enabled = false;
@@ -43,12 +52,6 @@ public class Customer : MonoBehaviour
 		CurrentCount++;
 	}
 
-	private void Awake()
-	{
-		CurrentCount = 0;
-		requiredCount = Random.Range(1, 3);
-	}
-
 	public void PickTable(DiningTable table)
 	{ 
 		this.table = table;
@@ -58,7 +61,8 @@ public class Customer : MonoBehaviour
 
 	public void GoToTable()
 	{
-		transform.position = table.transform.position + Vector3.up;
+		StartCoroutine(MoveRoutine());
+		// transform.position = table.transform.position + Vector3.up;
 	}
 
 	private void Move(Vector2 dir)
@@ -66,18 +70,66 @@ public class Customer : MonoBehaviour
 		if (!Mathf.Approximately(dir.magnitude, 1))
 			return;
 		Vector3 nextPosition = transform.position + (Vector3)dir;
-		RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, LayerMask.GetMask("Interactive"));
-		if (hit.collider == null)
+		Physics2D.IgnoreCollision(_coll, _coll, true); // Raycast 전에 설정
+		// RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, 1f, LayerMask.GetMask(
+		// 	LayerName.Customer.ToString(), LayerName.Player.ToString(), LayerName.Villain.ToString()));
+		//
+		
+		RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, dir, 1f, LayerMask.GetMask(
+			LayerName.Customer.ToString(), LayerName.Player.ToString(), LayerName.Villain.ToString()));
+		//
+		// print(hits.Length);
+		// for (int i = 0; i < hits.Length; i++)
+		// {
+		// 	print(i + " =" + hits[i].collider);
+		// }
+
+		bool isHit = false;
+		foreach (RaycastHit2D hit in hits)
 		{
-			transform.position = nextPosition;
+			if (hit.collider == null || hit.collider.gameObject == gameObject)
+				continue;
+			isHit = true;
+			break;
+			// transform.position = nextPosition;
 		}
-		else
+		if (!isHit)
+			transform.position = nextPosition;
+		// RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, 1f, LayerMask.GetMask(LayerName.Player.ToString(), LayerName.Villain.ToString()));
+		// print($"{hit.collider}, {hit.collider.GetInstanceID()} , {transform.GetInstanceID()}");
+		// if (hit.collider == null || hit.collider.gameObject == gameObject)
+		// {
+		// 	transform.position = nextPosition;
+		// }
+		// else
+		// {
+		// 	// DiningTable 태그가 없음
+		// 	// if (hit.collider.CompareTag(DiningTable))
+		// 	// {
+		// 	// 	hit.collider.GetComponent<DiningTable>().customer = this;
+		// 	// 	PickTable(hit.collider.GetComponent<DiningTable>());
+		// 	// }
+		// }
+	}
+
+	private IEnumerator MoveRoutine()
+	{
+		Vector3 dest = table.transform.position + Vector3.up;
+		while (!IsAtTable(dest))
 		{
-			if (hit.collider.CompareTag("DiningTable"))
-			{
-				// hit.collider.GetComponent<DiningTable>().customer = this;
-				// PickTable(hit.collider.GetComponent<DiningTable>());
-			}
+			if (transform.position.y > dest.y + 1)
+				Move(Vector2.down);
+			else if (dest.x > transform.position.x)
+				Move(Vector2.right);
+			else
+				Move(Vector2.down);
+			yield return new WaitForSeconds(1f);
 		}
 	}
+
+	private bool IsAtTable(Vector3 dest)
+	{
+		return transform.position == dest;
+	}
+	
 }

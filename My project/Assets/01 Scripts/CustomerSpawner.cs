@@ -9,6 +9,7 @@ public class CustomerSpawner : MonoBehaviour, Creatable
 	private Customer _currentCustomer;
 	public CashierDesk cashierDesk;
 	public float spawnTime = 1f;
+	private Coroutine _spawnRoutine;
 
 	public void Create()
 	{
@@ -31,7 +32,8 @@ public class CustomerSpawner : MonoBehaviour, Creatable
 	{
 		if (cashierDesk.customer == null)
 		{
-			StartCoroutine(CreateCustomerRoutine());
+			if (_spawnRoutine == null)
+				_spawnRoutine = StartCoroutine(CreateCustomerRoutine());
 		}
 	}
 	
@@ -39,12 +41,16 @@ public class CustomerSpawner : MonoBehaviour, Creatable
 	{
 		yield return new WaitForSeconds(1f);
 		CreateCustomer();
+		_spawnRoutine = null;
 	}
 	
 	
 	private void CreateCustomer()
 	{
 		if (cashierDesk.customer)
+			return;
+		RaycastHit2D hit = Physics2D.Raycast(cashierDesk.transform.position, Vector2.down, 1f, LayerMask.GetMask(LayerName.Customer.ToString()));
+		if (hit.collider != null)
 			return;
 		Create();
 		cashierDesk.customer = GetCustomer();
