@@ -83,15 +83,30 @@ public class CashierDesk : InteractiveObject, Creatable
 							_cashierTable.food.DeCrease();
 							customer.IncreaseFood();
 						}
+						if (customer.food.CurrentCount == customer.requiredCount)
+						{
+							StartCoroutine(SearchAvailableTable());
+						}
 					}
 				}
 			}
-
 		});
 	}
-	
-	
-	
+
+	private IEnumerator SearchAvailableTable()
+	{
+		DiningTable table = null;
+		while (true)
+		{
+			if (TableManager.Instance.GetTable(out table))
+				break;
+			yield return new WaitForSeconds(1f);
+		}
+		customer.PickTable(table);
+		customer.GoToTable();
+		customer = null;
+		StopAllCoroutines();
+	}
 	
 	public void Create()
 	{

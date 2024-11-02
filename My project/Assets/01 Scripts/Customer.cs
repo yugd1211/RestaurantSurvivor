@@ -56,21 +56,28 @@ public class Customer : MonoBehaviour
 		requiredCount = Random.Range(1, 3);
 	}
 
-	private void PickTable(DiningTable table)
+	public void PickTable(DiningTable table)
 	{ 
-		print("pick table");
 		this.table = table;
+		table.isOccupied = true;
+		table.customer = this;
 	}
-	private void Update()
+	
+	// private void Update()
+	// {
+	// 	RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.left, 1f, LayerMask.GetMask("Interactive"));
+	// 	if (hit.collider == null)
+	// 		return;
+	// 	if (hit.collider.TryGetComponent(out DiningTable targetTable))
+	// 	{
+	// 		PickTable(targetTable);
+	// 		targetTable.customer = this;
+	// 	}
+	// }
+
+	public void GoToTable()
 	{
-		RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.left, 1f, LayerMask.GetMask("Interactive"));
-		if (hit.collider == null)
-			return;
-		if (hit.collider.TryGetComponent(out DiningTable targetTable))
-		{
-			PickTable(targetTable);
-			targetTable.customer = this;
-		}
+		transform.position = table.transform.position + Vector3.up;
 	}
 
 	private void Move(Vector2 dir)

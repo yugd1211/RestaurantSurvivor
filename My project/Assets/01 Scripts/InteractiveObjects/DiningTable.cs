@@ -7,6 +7,7 @@ public class DiningTable : InteractiveObject, Creatable
 {
 	public Trash trashPrefab;
 	public Customer customer;
+	public bool isOccupied;
 	
 	private Carryable _obj = null;
 	public int deleteCount = 2;
