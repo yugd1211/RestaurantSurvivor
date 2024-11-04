@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8999640187493649646}
-  - component: {fileID: 4515330877480437768}
   - component: {fileID: 6647177502104049234}
+  - component: {fileID: 4515330877480437768}
   m_Layer: 8
   m_Name: SafeBoxVillain
   m_TagString: Villain
@@ -34,18 +34,6 @@ Transform:
   - {fileID: 4045476325017577228}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4515330877480437768
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1177097654227232234}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e8020d40a8af34e81b3ac6cda710d331, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!61 &6647177502104049234
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -91,6 +79,19 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &4515330877480437768
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1177097654227232234}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8020d40a8af34e81b3ac6cda710d331, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  safeBoxDeleteTime: 30
 --- !u!1 &6200182105063954965
 GameObject:
   m_ObjectHideFlags: 0

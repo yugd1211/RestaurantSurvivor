@@ -114,7 +114,8 @@ public class Countertop : InteractiveObject, Creatable
 		while (_currentFoodCount < _maxFood)
 		{
 			yield return new WaitForSeconds(interval);
-			Create();
+			if (isInteractable)
+				Create();
 		}
 		_createFoodCoroutine = null;
 	}

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 
 public class VillainManager : Singleton<VillainManager>
@@ -14,9 +15,10 @@ public class VillainManager : Singleton<VillainManager>
 
 	private void Start()
 	{
-		currIndex = 1;
+		currIndex = 2;
 		Create();
 		villain.MoveTo();
+
 	}
 
 	public void Create()

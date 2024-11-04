@@ -9,7 +9,8 @@ public class GameManager : Singleton<GameManager>
 { 
 	public SafeBox safeBox;
 	public CashierDesk cashierDesk;
-	public CustomerSpawner customerSpawner;
+	public CustomerSpawner customerSpawner; 
+	public Countertop[] countertops;
 
 	protected override void Awake()
 	{
@@ -19,7 +20,7 @@ public class GameManager : Singleton<GameManager>
 
 	private void Start()
 	{
-		cashierDesk = FindObjectOfType<CashierDesk>();
+		cashierDesk = FindObjectOfType<CashierDesk>(); 
+		countertops = FindObjectsByType<Countertop>(FindObjectsSortMode.None);
 	}
-
 }

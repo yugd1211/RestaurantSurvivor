@@ -42,4 +42,19 @@ public abstract class Villain : MonoBehaviour
 		}
 		return false;
 	}
+	
+	protected bool SearchInteractive<T>(out T interactiveObject) where T : class
+	{
+		interactiveObject = null;
+		foreach (Vector2 dir in SearchDirs)
+		{
+			RaycastHit2D hit = Physics2D.Raycast(
+				transform.position, dir, 1f, 
+				LayerMask.GetMask(LayerName.Interactive.ToString()));
+			if (hit.collider && hit.collider.TryGetComponent(out interactiveObject))
+				if (interactiveObject != null) // Null 검사를 추가
+					return true;	
+		}
+		return false;
+	}
 }
