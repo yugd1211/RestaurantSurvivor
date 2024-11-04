@@ -28,9 +28,16 @@ public class SafeBox : InteractiveObject
 		if (CurrentMoney < 0)
 			CurrentMoney = 0;
 	}
+	
+	public void HalveMoney()
+	{
+		CurrentMoney /= 2;
+	}
 
 	private void Update()
 	{
+		if (isInteractable == false)
+			return;
 		List<RaycastHit2D> hits = GetInteracObjsInRayPath();
 		DisplayRay();
 		hits.ForEach(item =>

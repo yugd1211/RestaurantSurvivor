@@ -14,11 +14,14 @@ public class CashierTable : InteractiveObject
 			new InteractionZone {dir = Vector2.up + Vector2.right, rayDist = 1f, layer = LayerName.Player},
 		};
 	}
+	
 	private void Update()
 	{		
-		List<RaycastHit2D> hits = GetInteracObjsInRayPath();
 		DisplayRay();
 
+		if (isInteractable == false)
+			return;
+		List<RaycastHit2D> hits = GetInteracObjsInRayPath();
 		foreach (RaycastHit2D item in hits)
 		{
 			if (item.transform.TryGetComponent(out Player player))

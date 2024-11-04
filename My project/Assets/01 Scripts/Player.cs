@@ -38,17 +38,31 @@ public class Player : MonoBehaviour
 
 	private void Move()
 	{
+		
 		if (_moveDir == Vector2.zero)
 			return;
 			// 방향에 따른 애니메이션 트리거 설정
 			if (_moveDir == Vector2.up)
-				anim.SetTrigger("UpTrigger");
+			{
+				if (!anim.GetCurrentAnimatorClipInfo(0)[0].clip.name.Equals("PlayerUp"))
+					anim.SetTrigger("UpTrigger");
+			}
 			else if (_moveDir == Vector2.down)
-				anim.SetTrigger("DownTrigger");
+			{
+				if (!anim.GetCurrentAnimatorClipInfo(0)[0].clip.name.Equals("PlayerDown"))
+					anim.SetTrigger("DownTrigger");
+			}
 			else if (_moveDir == Vector2.left)
-				anim.SetTrigger("LeftTrigger");
+			{
+				if (!anim.GetCurrentAnimatorClipInfo(0)[0].clip.name.Equals("PlayerLeft"))
+					anim.SetTrigger("LeftTrigger");
+			}
 			else if (_moveDir == Vector2.right)
-				anim.SetTrigger("RightTrigger");
+			{
+				if (!anim.GetCurrentAnimatorClipInfo(0)[0].clip.name.Equals("PlayerRight"))
+					anim.SetTrigger("RightTrigger");
+			}
+
 			else
 				return;
 		if (!CheckPath(_moveDir))
@@ -63,6 +77,7 @@ public class Player : MonoBehaviour
 		float rayDistance = 1f; // 레이 길이
 		RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, rayDistance,
 			LayerMask.GetMask(LayerName.Interactive.ToString(), LayerName.Villain.ToString(), LayerName.Customer.ToString())); 
+		// print(hit.collider);
 		if (hit.collider != null) 
 			return false;
 		return true;

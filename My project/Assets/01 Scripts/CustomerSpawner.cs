@@ -30,7 +30,7 @@ public class CustomerSpawner : MonoBehaviour, Creatable
 	
 	private void Update()
 	{
-		if (cashierDesk.customer == null)
+		if (cashierDesk.guest == null)
 		{
 			if (_spawnRoutine == null)
 				_spawnRoutine = StartCoroutine(CreateCustomerRoutine());
@@ -47,12 +47,12 @@ public class CustomerSpawner : MonoBehaviour, Creatable
 	
 	private void CreateCustomer()
 	{
-		if (cashierDesk.customer)
+		if (cashierDesk.guest != null)
 			return;
 		RaycastHit2D hit = Physics2D.Raycast(cashierDesk.transform.position, Vector2.down, 1f, LayerMask.GetMask(LayerName.Customer.ToString()));
 		if (hit.collider != null)
 			return;
 		Create();
-		cashierDesk.customer = GetCustomer();
+		cashierDesk.guest = GetCustomer();
 	}
 }

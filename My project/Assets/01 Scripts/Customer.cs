@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class Customer : MonoBehaviour
+public class Customer : MonoBehaviour, CashierDeskInteractable
 {
 	// TODO : 다른 객체가 생성해줘야함
 	public Food food;
@@ -61,6 +61,7 @@ public class Customer : MonoBehaviour
 
 	public void GoToTable()
 	{
+		print("GoToTable");
 		StartCoroutine(MoveRoutine());
 		// transform.position = table.transform.position + Vector3.up;
 	}
@@ -77,12 +78,7 @@ public class Customer : MonoBehaviour
 		
 		RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, dir, 1f, LayerMask.GetMask(
 			LayerName.Customer.ToString(), LayerName.Player.ToString(), LayerName.Villain.ToString()));
-		//
-		// print(hits.Length);
-		// for (int i = 0; i < hits.Length; i++)
-		// {
-		// 	print(i + " =" + hits[i].collider);
-		// }
+
 
 		bool isHit = false;
 		foreach (RaycastHit2D hit in hits)
@@ -95,25 +91,12 @@ public class Customer : MonoBehaviour
 		}
 		if (!isHit)
 			transform.position = nextPosition;
-		// RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, 1f, LayerMask.GetMask(LayerName.Player.ToString(), LayerName.Villain.ToString()));
-		// print($"{hit.collider}, {hit.collider.GetInstanceID()} , {transform.GetInstanceID()}");
-		// if (hit.collider == null || hit.collider.gameObject == gameObject)
-		// {
-		// 	transform.position = nextPosition;
-		// }
-		// else
-		// {
-		// 	// DiningTable 태그가 없음
-		// 	// if (hit.collider.CompareTag(DiningTable))
-		// 	// {
-		// 	// 	hit.collider.GetComponent<DiningTable>().customer = this;
-		// 	// 	PickTable(hit.collider.GetComponent<DiningTable>());
-		// 	// }
-		// }
 	}
 
 	private IEnumerator MoveRoutine()
 	{
+		print("MoveRoutine");
+
 		Vector3 dest = table.transform.position + Vector3.up;
 		while (!IsAtTable(dest))
 		{

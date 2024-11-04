@@ -6,9 +6,8 @@ public class CashierDesk : InteractiveObject, Creatable
 {
 	public Money prefab; 
 	public Money money = null;
-	public Customer customer = null;
+	public CashierDeskInteractable guest = null;
 	public float saleSpeed = 0.5f;
-	
 	private CashierTable _cashierTable;
 	private void Reset()
 	{
@@ -23,22 +22,23 @@ public class CashierDesk : InteractiveObject, Creatable
 	
 	public void SetCustomer(Customer customer)
 	{
-		this.customer = customer;
+		this.guest = customer;
 		customer.transform.SetParent(transform);
 		customer.transform.position = transform.position + Vector3.down;
-		// customer.transform.localPosition = Vector3.down;
+		// guest.transform.localPosition = Vector3.down;
 	}
 
 	private void Start()
 	{
 		_cashierTable = FindObjectOfType<CashierTable>();
-		Create();
 	}
 
 	private void Update()
 	{
-		List<RaycastHit2D> hits = GetInteracObjsInRayPath();
 		DisplayRay();
+		if (isInteractable == false)
+			return;
+		List<RaycastHit2D> hits = GetInteracObjsInRayPath();
 		hits.ForEach(item =>
 		{
 			if (item.transform != null)
@@ -74,9 +74,10 @@ public class CashierDesk : InteractiveObject, Creatable
 					else if (item.transform.position - transform.position == Vector3.up ||
 							item.transform.position - transform.position == Vector3.up + Vector3.right)
 					{
-						if (customer == null || _cashierTable == null || _cashierTable.food == null)
+						if (this.guest == null || _cashierTable == null || _cashierTable.food == null)
 							return;
-						while (customer.CurrentCount < customer.requiredCount)
+						Customer guest = this.guest as Customer;
+						while (guest.CurrentCount < guest.requiredCount)
 						{
 							if (_cashierTable.food.CurrentCount <= 0)
 							{
@@ -87,9 +88,9 @@ public class CashierDesk : InteractiveObject, Creatable
 								Create();
 							money.Increase();
 							_cashierTable.food.DeCrease();
-							customer.IncreaseFood();
+							guest.IncreaseFood();
 						}
-						if (customer.food.CurrentCount == customer.requiredCount)
+						if (guest.food.CurrentCount == guest.requiredCount)
 							StartCoroutine(SearchAvailableTableRoutine());
 					}
 				}
@@ -106,9 +107,12 @@ public class CashierDesk : InteractiveObject, Creatable
 				break;
 			yield return new WaitForSeconds(1f);
 		}
-		customer.PickTable(table);
-		customer.GoToTable();
-		customer = null;
+		Customer guest = this.guest as Customer;
+		if (this.guest == null)
+			yield break;
+		guest.PickTable(table);
+		guest.GoToTable();
+		this.guest = null;
 		StopAllCoroutines();
 	}
 	

@@ -32,6 +32,8 @@ public class DiningTable : InteractiveObject, Creatable
 	private void Update()
 	{
 		DisplayRay();
+		if (isInteractable == false)
+			return;
 		List<RaycastHit2D> hits = GetInteracObjsInRayPath();
 		hits.ForEach
 		(item =>

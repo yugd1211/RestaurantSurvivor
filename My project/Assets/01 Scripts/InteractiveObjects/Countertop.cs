@@ -17,8 +17,9 @@ public class Countertop : InteractiveObject, Creatable
 
 	private Coroutine _createFoodCoroutine;
 
-	private void Awake()
+	protected override void Awake()
 	{
+		base.Awake();
 		_maxFood = 4;
 		_currentFoodCount = 0;
 	}
@@ -47,9 +48,11 @@ public class Countertop : InteractiveObject, Creatable
 
 	private void Update()
 	{
-		List<RaycastHit2D> hits = GetInteracObjsInRayPath();
 		DisplayRay();
-
+		if (isInteractable == false)
+			return;
+		
+		List<RaycastHit2D> hits = GetInteracObjsInRayPath();
 		foreach (RaycastHit2D item in hits)
 		{
 			switch (item.collider.tag)
