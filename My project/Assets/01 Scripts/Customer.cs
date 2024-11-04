@@ -61,7 +61,6 @@ public class Customer : MonoBehaviour, CashierDeskInteractable
 
 	public void GoToTable()
 	{
-		print("GoToTable");
 		StartCoroutine(MoveRoutine());
 		// transform.position = table.transform.position + Vector3.up;
 	}
@@ -95,8 +94,6 @@ public class Customer : MonoBehaviour, CashierDeskInteractable
 
 	private IEnumerator MoveRoutine()
 	{
-		print("MoveRoutine");
-
 		Vector3 dest = table.transform.position + Vector3.up;
 		while (!IsAtTable(dest))
 		{
