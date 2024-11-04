@@ -32,7 +32,6 @@ public class CashierDesk : InteractiveObject, Creatable
 	private void Start()
 	{
 		_cashierTable = FindObjectOfType<CashierTable>();
-		Create();
 	}
 
 	private void Update()

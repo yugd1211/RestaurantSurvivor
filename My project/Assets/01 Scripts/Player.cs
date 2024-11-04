@@ -63,6 +63,7 @@ public class Player : MonoBehaviour
 		float rayDistance = 1f; // 레이 길이
 		RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, rayDistance,
 			LayerMask.GetMask(LayerName.Interactive.ToString(), LayerName.Villain.ToString(), LayerName.Customer.ToString())); 
+		// print(hit.collider);
 		if (hit.collider != null) 
 			return false;
 		return true;

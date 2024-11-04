@@ -29,7 +29,7 @@ public abstract class InteractiveObject : MonoBehaviour
 	{
 		isInteractable = true;
 	}
-	protected RaycastHit2D FindInteractableAtRay(InteractionZone interZone)
+	private RaycastHit2D FindInteractableAtRay(InteractionZone interZone)
 	{
 		return Physics2D.Raycast(transform.position, interZone.dir, interZone.rayDist, LayerMask.GetMask(interZone.layer.ToString()));
 	}
