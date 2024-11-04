@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class Customer : MonoBehaviour, CashierDeskInteractable
+public class Customer : MonoBehaviour, CashierDeskInteractable, DiningTableInteractable
 {
 	// TODO : 다른 객체가 생성해줘야함
 	public Food food;
@@ -56,7 +56,7 @@ public class Customer : MonoBehaviour, CashierDeskInteractable
 	{ 
 		this.table = table;
 		table.isOccupied = true;
-		table.customer = this;
+		table.guest = this;
 	}
 
 	public void GoToTable()

@@ -15,9 +15,18 @@ public class VillainManager : Singleton<VillainManager>
 
 	private void Start()
 	{
-		currIndex = 2;
+		currIndex = 3;
 		Create();
-		villain.MoveTo();
+		DiningTableVillain diningTableVillain = villain as DiningTableVillain;
+		print(diningTableVillain);
+		if (diningTableVillain == null)
+			return;	
+		if (TableManager.Instance.GetTable(out DiningTable table))
+		{
+			print(table);
+			diningTableVillain.diningTable = table;
+			villain.MoveTo();
+		}
 
 	}
 

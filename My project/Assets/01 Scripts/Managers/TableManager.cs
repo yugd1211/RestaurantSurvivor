@@ -30,7 +30,18 @@ public class TableManager : Singleton<TableManager>
 		return true;
 	}
 
+	protected override void Awake()
+	{
+		base.Awake();
+		UpdateAvailableTables();
+	}
+
 	private void Update()
+	{
+		UpdateAvailableTables();
+	}
+
+	private void UpdateAvailableTables()
 	{
 		RetrieveOccupiedTable();
 		tables.ForEach(table =>
@@ -46,10 +57,9 @@ public class TableManager : Singleton<TableManager>
 		tables.ForEach
 		(table =>
 			{
-				if (table.isOccupied && table.customer == null)
+				if (table.isOccupied && table.guest == null)
 					table.isOccupied = false;
 			}
 		);
-		
 	}
 }

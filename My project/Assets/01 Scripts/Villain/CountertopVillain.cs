@@ -23,7 +23,6 @@ public class CountertopVillain : Villain
 
     protected override void Destroy()
     {
-        print(_interactiveObject);
         if (_interactiveObject != null) 
             _interactiveObject.isInteractable = true;
         base.Destroy();

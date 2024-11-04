@@ -580,6 +580,7 @@ MonoBehaviour:
   - {fileID: 4515330877480437768, guid: 022465fc695914fd8979de4877cfaa4a, type: 3}
   - {fileID: -7857476290870025722, guid: 5ea7c4ee257aa4dcdbc28fdfba9418a6, type: 3}
   - {fileID: 879277169793013337, guid: 03e03b6c53b5245a7be7be2f6767179c, type: 3}
+  - {fileID: 1862069541389856842, guid: 2538c8d8ccf96416eb268f632b83f225, type: 3}
   villain: {fileID: 0}
   currIndex: 1
 --- !u!4 &262419724

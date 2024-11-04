@@ -6,3 +6,8 @@ public interface CashierDeskInteractable
 {
 	
 }
+
+public interface DiningTableInteractable
+{
+	
+}

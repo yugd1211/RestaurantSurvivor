@@ -1,22 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Rendering;
 using UnityEngine;
 
-public class DiningTableVillain : Villain
+public class DiningTableVillain : Villain, DiningTableInteractable
 {
-    // Start is called before the first frame update
-    // void Start()
-    // {
-    //     
-    // }
-    //
-    // // Update is called once per frame
-    // void Update()
-    // {
-    //     
-    // }
+    public DiningTable diningTable;
+    
     public override void MoveTo()
     {
-        throw new System.NotImplementedException();
+        if (diningTable.isOccupied)
+        {
+            Destroy();
+            return;
+        }
+        diningTable.isOccupied = true;
+        diningTable.isInteractable = false;
+        transform.position = diningTable.transform.position + Vector3.up;
+    }
+    
+    protected override void Destroy()
+    {
+        if (diningTable != null) 
+            diningTable.isInteractable = true;
+        base.Destroy();
     }
 }

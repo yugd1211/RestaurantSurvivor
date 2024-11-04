@@ -6,7 +6,7 @@ using UnityEngine;
 public class DiningTable : InteractiveObject, Creatable
 {
 	public Trash trashPrefab;
-	public Customer customer;
+	public DiningTableInteractable guest;
 	public bool isOccupied;
 	
 	private Carryable _obj = null;
@@ -100,8 +100,8 @@ public class DiningTable : InteractiveObject, Creatable
 		}
 		_obj = null;
 		Create();
-		Destroy(customer.gameObject);
-		customer = null;
+		Destroy((guest as Component)?.gameObject);
+		guest = null;
 	}
 
 	public void Create()
