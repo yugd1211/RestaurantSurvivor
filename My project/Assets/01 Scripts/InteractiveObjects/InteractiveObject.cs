@@ -24,14 +24,12 @@ public abstract class InteractiveObject : MonoBehaviour
 {
 	public bool isInteractable;
 	public List<InteractionZone> interZones;
-	
 
 	protected virtual void Awake()
 	{
 		isInteractable = true;
 	}
-	
-	private RaycastHit2D FindInteractableAtRay(InteractionZone interZone)
+	protected RaycastHit2D FindInteractableAtRay(InteractionZone interZone)
 	{
 		return Physics2D.Raycast(transform.position, interZone.dir, interZone.rayDist, LayerMask.GetMask(interZone.layer.ToString()));
 	}

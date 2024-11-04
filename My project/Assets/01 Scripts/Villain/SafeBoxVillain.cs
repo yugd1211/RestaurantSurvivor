@@ -41,7 +41,6 @@ public class SafeBoxVillain : Villain
             RaycastHit2D hit = Physics2D.Raycast(
                 transform.position, dir, 1f, 
                 LayerMask.GetMask(LayerName.Interactive.ToString()));
-            if (hit.collider && hit.collider.TryGetComponent(out safeBox))
                 return true;
         }
         return false;

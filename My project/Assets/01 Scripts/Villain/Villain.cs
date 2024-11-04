@@ -25,7 +25,6 @@ public abstract class Villain : MonoBehaviour
 
 	protected virtual void Destroy()
 	{ 
-		print(this.name + "Destroy");
 		Destroy(gameObject);
 	}
 	
