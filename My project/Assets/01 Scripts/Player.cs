@@ -38,7 +38,8 @@ public class Player : MonoBehaviour
 
 	private void Move()
 	{
-		
+		if (GameManager.Instance.isPause)
+			return;
 		if (_moveDir == Vector2.zero)
 			return;
 			// 방향에 따른 애니메이션 트리거 설정

@@ -6,7 +6,8 @@ using UnityEngine.Rendering.Universal;
 using UnityEngine.Serialization;
 
 public class GameManager : Singleton<GameManager>
-{ 
+{
+	public bool isPause = false;
 	public SafeBox safeBox;
 	public CashierDesk cashierDesk;
 	public CustomerSpawner customerSpawner; 
