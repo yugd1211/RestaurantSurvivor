@@ -7,6 +7,7 @@ using UnityEngine.Serialization;
 
 public class GameManager : Singleton<GameManager>
 {
+	public int level;
 	public bool isPause = false;
 	public SafeBox safeBox;
 	public CashierDesk cashierDesk;
