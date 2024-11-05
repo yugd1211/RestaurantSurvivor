@@ -81,16 +81,6 @@ public class Countertop : InteractiveObject, Creatable
 		hits.Clear();
 	}
 
-	public Carryable GetFood()
-	{
-		if (food == null)
-			return null;
-		Food result = food;
-		food = null;
-		DecreaseFoodCount();
-		return result;
-	}
-	
 	public void IncreaseFoodCount()
 	{
 		_currentFoodCount++;

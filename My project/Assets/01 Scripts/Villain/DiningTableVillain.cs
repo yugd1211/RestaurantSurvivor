@@ -7,6 +7,15 @@ public class DiningTableVillain : Villain, DiningTableInteractable
 {
     public DiningTable diningTable;
     
+    private bool isDestroy = false;
+
+    protected override void Update()
+    {
+        if(isDestroy)
+            return;
+        base.Update();
+    }
+
     public override void MoveTo()
     {
         if (diningTable.isOccupied)
@@ -21,6 +30,7 @@ public class DiningTableVillain : Villain, DiningTableInteractable
     
     protected override void Destroy()
     {
+        isDestroy = true;
         if (diningTable != null) 
             diningTable.isInteractable = true;
         base.Destroy();

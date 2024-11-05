@@ -7,6 +7,8 @@ public class SafeBoxVillain : Villain
 {
     public float safeBoxDeleteTime = 30f;
     private float _safeBoxSearchTime = 0f;
+    private bool isDestroy = false;
+    
     public override void MoveTo()
     {
         transform.position = GameManager.Instance.safeBox.transform.position + Vector3.down;
@@ -14,6 +16,8 @@ public class SafeBoxVillain : Villain
 
     protected override void Update()
     {
+        if (isDestroy) 
+            return;
         base.Update();
 
         if (SearchSafeBox(out SafeBox safeBox))

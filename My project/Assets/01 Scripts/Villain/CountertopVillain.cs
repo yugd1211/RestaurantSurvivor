@@ -7,12 +7,15 @@ using Random = UnityEngine.Random;
 public class CountertopVillain : Villain
 {
     private InteractiveObject _interactiveObject;
-    // 조리대 기준 위치 랜덤으로 잡기
-
+    private bool isDestroy = false;
     protected override void Update()
     {
+        if (isDestroy)
+            return;
         base.Update();
         
+        if (isDestroy)
+            return;
         if (SearchInteractive(out InteractiveObject interactiveObject))
         {
             interactiveObject.isInteractable = false;
@@ -20,11 +23,13 @@ public class CountertopVillain : Villain
         }
         
     }
-
     protected override void Destroy()
     {
-        if (_interactiveObject != null) 
+        isDestroy = true;
+        if (_interactiveObject != null)
+        {
             _interactiveObject.isInteractable = true;
+        }
         base.Destroy();
     }
 

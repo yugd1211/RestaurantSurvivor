@@ -20,12 +20,14 @@ public abstract class Villain : MonoBehaviour
 			_playerSearchTime += Time.deltaTime;
 		else
 			_playerSearchTime = 0;
-		if (DeleteTime < _playerSearchTime)
+		if (DeleteTime <= _playerSearchTime)
+		{
 			Destroy();
+		}
 	}
 
 	protected virtual void Destroy()
-	{ 
+	{
 		VillainManager.Instance.villain = null;
 		Destroy(gameObject);
 	}
