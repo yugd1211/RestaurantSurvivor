@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class DiningTable : InteractiveObject, Creatable
 {
@@ -101,7 +102,13 @@ public class DiningTable : InteractiveObject, Creatable
 		_obj = null;
 		Create();
 		Destroy((guest as Component)?.gameObject);
-		guest = null;
+		if (Random.Range(0, 5) == 0 && VillainManager.Instance.GetVillain<DiningTableInteractable>(out Villain villain))
+		{
+			guest = villain as DiningTableInteractable;
+			villain.transform.position = transform.position + Vector3.up;
+		}
+		else
+			guest = null;
 	}
 
 	public void Create()

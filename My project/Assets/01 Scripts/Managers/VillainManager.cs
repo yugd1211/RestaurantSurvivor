@@ -6,28 +6,57 @@ using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 
-public class VillainManager : Singleton<VillainManager>
+public class VillainManager : Singleton<VillainManager>, Creatable
 { 
 	public Villain[] villainPrefab;
-	public Villain villain;
+	private Villain _villain;
+	private float _villainDeleteTime = 0f;
+	public Villain villain
+	{
+		get
+		{
+			return _villain;
+		}
+		set
+		{
+			if (value == null)
+			{
+				_villainDeleteTime = 0;
+			}
+			_villain = value;
+		}
+	}
 	public int currIndex =  1;
 
-
-	private void Start()
+	private void Update()
 	{
-		currIndex = 3;
-		Create();
-		DiningTableVillain diningTableVillain = villain as DiningTableVillain;
-		print(diningTableVillain);
-		if (diningTableVillain == null)
-			return;	
-		if (TableManager.Instance.GetTable(out DiningTable table))
-		{
-			print(table);
-			diningTableVillain.diningTable = table;
-			villain.MoveTo();
-		}
+		_villainDeleteTime += Time.deltaTime;
+		// print($"delete time = {_villainDeleteTime}");
+	}
 
+	public bool GetVillain<T>(out Villain villain)
+	{
+		// print("VictimManager GetVillain");
+		if (this.villain)
+		{ 
+			// print("VictimManager this.villain = true");
+			villain = null;
+			return false;
+		}
+		// print("VictimManager before for");
+		for (int i = 0; i < villainPrefab.Length; i++)
+		{
+			if (villainPrefab[i] is T)
+			{
+				// print("GetVillain");
+				currIndex = i;
+				Create();
+				villain = this.villain;
+				return true;
+			}
+		}
+		villain = null;
+		return false;
 	}
 
 	public void Create()

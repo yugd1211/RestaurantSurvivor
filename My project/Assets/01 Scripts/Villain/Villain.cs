@@ -7,7 +7,8 @@ public abstract class Villain : MonoBehaviour
 {
 	protected float DeleteTime = 3f;
 	
-	protected readonly Vector2[] SearchDirs = new Vector2[]{
+	protected readonly Vector2[] SearchDirs = new Vector2[]
+	{
 		Vector2.up, Vector2.down, Vector2.left, Vector2.right, 
 		Vector2.up + Vector2.left, Vector2.up + Vector2.right, Vector2.down + Vector2.left, Vector2.down + Vector2.right
 	};
@@ -25,6 +26,7 @@ public abstract class Villain : MonoBehaviour
 
 	protected virtual void Destroy()
 	{ 
+		VillainManager.Instance.villain = null;
 		Destroy(gameObject);
 	}
 	
@@ -52,7 +54,7 @@ public abstract class Villain : MonoBehaviour
 				transform.position, dir, 1f, 
 				LayerMask.GetMask(LayerName.Interactive.ToString()));
 			if (hit.collider && hit.collider.TryGetComponent(out interactiveObject))
-				if (interactiveObject != null) // Null 검사를 추가
+				if (interactiveObject != null)
 					return true;	
 		}
 		return false;
