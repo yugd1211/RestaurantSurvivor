@@ -18,11 +18,14 @@ public class DiningTableVillain : Villain, DiningTableInteractable
 
     public override void MoveTo()
     {
+        print("MoveTo Before");
+
         if (diningTable.isOccupied)
         {
             Destroy();
             return;
         }
+        print("MoveTo After");
         diningTable.isOccupied = true;
         diningTable.isInteractable = false;
         transform.position = diningTable.transform.position + Vector3.up;

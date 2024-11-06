@@ -29,7 +29,7 @@ public class CashierDesk : InteractiveObject, Creatable
 	}
 	
 	public void SetCustomer(Customer customer)
-	{
+	{	
 		this.guest = customer;
 		customer.transform.SetParent(transform);
 		customer.transform.position = transform.position + Vector3.down;

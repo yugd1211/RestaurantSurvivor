@@ -102,10 +102,13 @@ public class DiningTable : InteractiveObject, Creatable
 		_obj = null;
 		Create();
 		Destroy((guest as Component)?.gameObject);
+		isOccupied = false;
 		if (Random.Range(0, 5) == 0 && VillainManager.Instance.GetVillain<DiningTableInteractable>(out Villain villain))
 		{
+			if (villain is DiningTableVillain tableVillain) tableVillain.diningTable = this;
+			villain.MoveTo();
 			guest = villain as DiningTableInteractable;
-			villain.transform.position = transform.position + Vector3.up;
+			// villain.transform.position = transform.position + Vector3.up;
 		}
 		else
 			guest = null;
