@@ -11,15 +11,6 @@ public class TableManager : Singleton<TableManager>
 
 	public bool GetTable(out DiningTable outTable)
 	{
-		// foreach (DiningTable table in tables)
-		// {
-		// 	if (!table.IsAvailable())
-		// 		continue;
-		// 	outTable = table;
-		// 	return true;
-		// }
-		// outTable = null;
-		// return false;
 		if (availableTables.Count == 0)
 		{
 			outTable = null;

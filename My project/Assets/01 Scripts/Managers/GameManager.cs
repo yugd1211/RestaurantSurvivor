@@ -7,6 +7,7 @@ using UnityEngine.Serialization;
 
 public class GameManager : Singleton<GameManager>
 {
+	public Player player;
 	public int level;
 	public bool isPause = false;
 	public SafeBox safeBox;
@@ -18,6 +19,7 @@ public class GameManager : Singleton<GameManager>
 	{
 		base.Awake();
 		customerSpawner = GetComponent<CustomerSpawner>();
+		player = FindObjectOfType<Player>();
 	}
 
 	private void Start()

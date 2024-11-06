@@ -9,6 +9,9 @@ public class CashierDesk : InteractiveObject, Creatable
 	public CashierDeskInteractable guest = null;
 	public float saleSpeed = 0.5f;
 	private CashierTable _cashierTable;
+	private Coroutine _saleCoroutine;
+	private bool isAutoSale = false;
+	
 	private void Reset()
 	{
 		interZones = new List<InteractionZone>
@@ -18,6 +21,11 @@ public class CashierDesk : InteractiveObject, Creatable
 			new InteractionZone {dir = Vector2.up + Vector2.right, rayDist = 1f, layer = LayerName.Player},
 		};
 		saleSpeed = 0.5f;
+	}
+	
+	public void OnAutoSale()
+	{
+		isAutoSale = true;
 	}
 	
 	public void SetCustomer(Customer customer)
@@ -38,6 +46,8 @@ public class CashierDesk : InteractiveObject, Creatable
 		DisplayRay();
 		if (isInteractable == false)
 			return;
+		if (isAutoSale)
+			_saleTime += Time.deltaTime;
 		List<RaycastHit2D> hits = GetInteracObjsInRayPath();
 		hits.ForEach(item =>
 		{
@@ -71,31 +81,46 @@ public class CashierDesk : InteractiveObject, Creatable
 						}
 					}
 					// 손님 상호 작용 영역
-					else if (item.transform.position - transform.position == Vector3.up ||
-							item.transform.position - transform.position == Vector3.up + Vector3.right)
+					else if (!isAutoSale && (item.transform.position - transform.position == Vector3.up ||
+					                        item.transform.position - transform.position == Vector3.up + Vector3.right))
 					{
 						if (this.guest == null || _cashierTable == null || _cashierTable.food == null)
 							return;
-						Customer guest = this.guest as Customer;
-						while (guest.CurrentCount < guest.requiredCount)
-						{
-							if (_cashierTable.food.CurrentCount <= 0)
-							{
-								_cashierTable.food = null;
-								break;
-							}
-							if (money == null)
-								Create();
-							money.Increase();
-							_cashierTable.food.DeCrease();
-							guest.IncreaseFood();
-						}
-						if (guest.food.CurrentCount == guest.requiredCount)
-							StartCoroutine(SearchAvailableTableRoutine());
+						_saleTime += Time.deltaTime;
+						if (_saleCoroutine == null)
+							_saleCoroutine = StartCoroutine(SaleRoutine());
 					}
+					else
+						_saleTime = 0;
 				}
 			}
 		});
+	}
+
+	private float _saleTime = 0f;
+
+	private IEnumerator SaleRoutine()
+	{
+		Customer guest = this.guest as Customer;
+		while (guest.CurrentCount < guest.requiredCount)
+		{
+			if (_saleTime < saleSpeed)
+			{
+				yield return null;
+				continue;
+			}
+			_saleTime = 0;
+			if (_cashierTable.food.CurrentCount <= 0)
+				_cashierTable.food = null;
+			if (money == null)
+				Create();
+			money.Increase();
+			_cashierTable.food.DeCrease();
+			guest.IncreaseFood();
+		}
+		if (guest.food.CurrentCount == guest.requiredCount)
+			StartCoroutine(SearchAvailableTableRoutine());
+		_saleCoroutine = null;
 	}
 
 	private IEnumerator SearchAvailableTableRoutine()

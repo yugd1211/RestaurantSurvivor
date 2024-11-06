@@ -2,31 +2,32 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 
 public class Player : MonoBehaviour
 {
 	public float moveSpeed;
+	public float maxStorage = 4; 
+	public float villainDefense = 1;
 	public Animator anim;
+	public Carryable carriedItem;
+	
 	private Coroutine _moveCoroutine; 
 	private CashierTable _cashierTable;
-
 	private Vector2 _moveDir;
 	private bool _isMoving = true;
-	public Carryable carriedItem;
-
+	
 	private void Reset()
 	{
 		moveSpeed = 2f;
 		anim = GetComponent<Animator>();
 		_cashierTable = FindObjectOfType<CashierTable>();
 	}
+	
 	private void Start()
 	{
 		_moveCoroutine = StartCoroutine(CoMovePossible());
 		_cashierTable = FindObjectOfType<CashierTable>();
-
 	}
 
 	private void Update()
@@ -95,11 +96,6 @@ public class Player : MonoBehaviour
 		}
 	}
 
-	public void PickUpCarriedItem()
-	{
-		
-	}
-
 	public void SetItem(Carryable item)
 	{
 		if (carriedItem)
@@ -113,4 +109,13 @@ public class Player : MonoBehaviour
 			item.transform.localPosition = new Vector3(0, -0.1f, 0);
 		}
 	}
+	
+	public void DropItem()
+	{
+		if (!carriedItem)
+			return;
+		carriedItem.transform.SetParent(null);
+		carriedItem = null;
+	}
+	
 }

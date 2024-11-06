@@ -33,6 +33,8 @@ public class SafeBox : InteractiveObject
 	{
 		CurrentMoney /= 2;
 	}
+	
+	private bool _isUpgradePanelOpened = false;
 
 	private void Update()
 	{
@@ -42,6 +44,19 @@ public class SafeBox : InteractiveObject
 		DisplayRay();
 		hits.ForEach(item =>
 			{
+				// TODO : Refactor this code :( so fucking dirty
+				if (item.transform.position - transform.position == Vector3.right)
+				{
+					if (!_isUpgradePanelOpened)
+					{
+						UIManager.Instance.OpenUpgradePanel();
+						_isUpgradePanelOpened = true;
+					}
+				}
+				else
+				{
+					_isUpgradePanelOpened = false;
+				}
 				if (!item.transform.TryGetComponent(out Player player) || !player || !player.carriedItem)
 					return;
 				if (player.carriedItem is not Money playerMoney)
@@ -52,11 +67,6 @@ public class SafeBox : InteractiveObject
 				{
 					IncreaseMoney(playerMoney.CurrentCount);
 					Destroy(playerMoney.gameObject);
-				}
-				// 강화 상호작용 영역
-				else
-				{
-					
 				}
 
 			}

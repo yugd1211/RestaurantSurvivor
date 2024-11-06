@@ -6,6 +6,7 @@ using UnityEngine;
 public abstract class Villain : MonoBehaviour
 {
 	protected float DeleteTime = 3f;
+	private Player _player;
 	
 	protected readonly Vector2[] SearchDirs = new Vector2[]
 	{
@@ -20,7 +21,7 @@ public abstract class Villain : MonoBehaviour
 			_playerSearchTime += Time.deltaTime;
 		else
 			_playerSearchTime = 0;
-		if (DeleteTime <= _playerSearchTime)
+		if (DeleteTime / (_player == null ? 1 : _player.villainDefense) <= _playerSearchTime)
 		{
 			Destroy();
 		}
@@ -42,7 +43,10 @@ public abstract class Villain : MonoBehaviour
 				transform.position, dir, 1f, 
 				LayerMask.GetMask(LayerName.Player.ToString()));
 			if (hit.collider)
+			{
+				_player = hit.collider.GetComponent<Player>();
 				return true;
+			}
 		}
 		return false;
 	}

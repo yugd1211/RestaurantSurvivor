@@ -8,7 +8,12 @@ public class SafeBoxVillain : Villain
     public float safeBoxDeleteTime = 30f;
     private float _safeBoxSearchTime = 0f;
     private bool isDestroy = false;
-    
+
+    private void Start()
+    {
+        DeleteTime = 1.5f;
+    }
+
     public override void MoveTo()
     {
         transform.position = GameManager.Instance.safeBox.transform.position + Vector3.down;

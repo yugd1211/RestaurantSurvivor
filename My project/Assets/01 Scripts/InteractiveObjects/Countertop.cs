@@ -9,8 +9,6 @@ public class Countertop : InteractiveObject, Creatable
 	public float createInterval;
 	public Food foodPrefab; 
 	public Food food = null;
-	public int upgradeMaxFood;
-	public int upgradeInterval;
 	
 	private int _maxFood;
 	private int _currentFoodCount;
@@ -22,12 +20,6 @@ public class Countertop : InteractiveObject, Creatable
 		base.Awake();
 		_maxFood = 4;
 		_currentFoodCount = 0;
-	}
-	
-	public void Upgrade()
-	{
-		_maxFood += upgradeMaxFood;
-		createInterval = upgradeInterval;
 	}
 
 	private void Start()
