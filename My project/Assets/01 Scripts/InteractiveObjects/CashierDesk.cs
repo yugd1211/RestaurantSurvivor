@@ -111,7 +111,10 @@ public class CashierDesk : InteractiveObject, Creatable
 			}
 			_saleTime = 0;
 			if (_cashierTable.food.CurrentCount <= 0)
+			{
 				_cashierTable.food = null;
+				continue;
+			}
 			if (money == null)
 				Create();
 			money.Increase();

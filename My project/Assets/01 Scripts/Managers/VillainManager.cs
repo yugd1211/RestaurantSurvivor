@@ -8,15 +8,15 @@ using Random = UnityEngine.Random;
 
 public class VillainManager : Singleton<VillainManager>, Creatable
 {
-	private bool firstOneMinute = false;
 	public Villain[] villainPrefab;
-	private Villain _villain;
-	private float _villainDeleteTime = 0f;
-	
+	public int firstSpawn = 60;
 	public float cashierVillainCreateTime = 30f;
 	public float countertopVillainCreateTime = 30f; 
 	public float safeBoxVillainCreateTime = 30f;
 
+	private bool _isFirstSpawn = false;
+	private Villain _villain;
+	private float _villainDeleteTime = 0f;
 	public Villain villain
 	{
 		get => _villain;
@@ -27,6 +27,7 @@ public class VillainManager : Singleton<VillainManager>, Creatable
 	private void Start()
 	{
 		SetCreateRandomTime();
+		StartCoroutine(FirstOneMinuteCoroutine());
 	}
 	private void SetCreateRandomTime()
 	{
@@ -35,10 +36,14 @@ public class VillainManager : Singleton<VillainManager>, Creatable
 		safeBoxVillainCreateTime = Random.Range(45f, 60f);
 	}
 	
-	private IEnumerator firstOneMinuteCoroutine()
-	{
-		yield return new WaitForSeconds(60f);
-		firstOneMinute = true;
+	private IEnumerator FirstOneMinuteCoroutine()
+	{ 
+		yield return new WaitForSeconds(firstSpawn);
+		if (_isFirstSpawn)
+			yield break;
+		int index = Random.Range(1, 3);
+		Create();
+		villain.MoveTo();
 	}
 	
 	private void Update()
@@ -59,9 +64,8 @@ public class VillainManager : Singleton<VillainManager>, Creatable
 				}
 			}
 		}
-		if (firstOneMinute || _villainDeleteTime >= cashierVillainCreateTime)
+		if (_villainDeleteTime >= cashierVillainCreateTime)
 		{
-			firstOneMinute = false;
 			for (int i = 0; i < villainPrefab.Length; i++)
 			{
 				if (villainPrefab[i] is not CashierVillain || GameManager.Instance.cashierDesk.guest != null)
@@ -73,9 +77,8 @@ public class VillainManager : Singleton<VillainManager>, Creatable
 				return;
 			}
 		}
-		if (firstOneMinute || _villainDeleteTime >= countertopVillainCreateTime)
+		if (_villainDeleteTime >= countertopVillainCreateTime)
 		{
-			firstOneMinute = false;
 			for (int i = 0; i < villainPrefab.Length; i++)
 			{
 				if (villainPrefab[i] as CountertopVillain)
@@ -117,6 +120,7 @@ public class VillainManager : Singleton<VillainManager>, Creatable
 		if (villain != null)
 			return;
 		_villainDeleteTime = 0;
+		_isFirstSpawn = true;
 		SetCreateRandomTime();
 		villain = Instantiate(villainPrefab[currIndex]);
 	}

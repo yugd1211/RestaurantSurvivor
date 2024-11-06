@@ -2,18 +2,22 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class CustomerSpawner : MonoBehaviour, Creatable
 {
-	public Customer customerPrefab;
+	public Customer[] customerPrefab;
 	private Customer _currentCustomer;
 	public CashierDesk cashierDesk;
 	public float spawnTime = 1f;
 	private Coroutine _spawnRoutine;
-
+	private int[] _levelTable = { 100, 100, 90, 90, 90, 80, 80, 80, 60, 60, 40, 40, 20 };
+	
 	public void Create()
 	{
-		_currentCustomer = Instantiate(customerPrefab);
+		int ran = Random.Range(0, 100) < _levelTable[GameManager.Instance.level] ? 0 : 1;
+		print(ran);
+		_currentCustomer = Instantiate(customerPrefab[ran]);
 	}
 
 	private void Start()

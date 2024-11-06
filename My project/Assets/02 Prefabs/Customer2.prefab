@@ -74,7 +74,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 289823355, guid: a9e2b7da651ad48ac89985ba6fe5b4a0, type: 3}
+  m_Sprite: {fileID: 1282592039, guid: f15c48c841cb3cc4aa1590dd762e4edd, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -95,7 +95,7 @@ Animator:
   m_GameObject: {fileID: 4612963347920535663}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 5aa4fca67945d4b5b89532af77f575fe, type: 2}
+  m_Controller: {fileID: 9100000, guid: a9fda31066fc64024a315c4ffe8a02b4, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -118,7 +118,7 @@ GameObject:
   - component: {fileID: 7393353496002679954}
   - component: {fileID: 1287469906259176449}
   m_Layer: 9
-  m_Name: Customer
+  m_Name: Customer2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -201,7 +201,7 @@ MonoBehaviour:
   food: {fileID: 455998899795352210}
   table: {fileID: 0}
   requiredCount: 0
-  requiredRange: {x: 1, y: 3}
+  requiredRange: {x: 5, y: 10}
 --- !u!1001 &3212539719397083826
 PrefabInstance:
   m_ObjectHideFlags: 0

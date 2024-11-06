@@ -10,6 +10,7 @@ public class Customer : MonoBehaviour, CashierDeskInteractable, DiningTableInter
 	public Food food;
 	public DiningTable table;
 	public int requiredCount;
+	public Vector2Int requiredRange;
 
 	private Collider2D _coll;
 	
@@ -37,7 +38,7 @@ public class Customer : MonoBehaviour, CashierDeskInteractable, DiningTableInter
 	private void Awake()
 	{
 		CurrentCount = 0;
-		requiredCount = Random.Range(1, 3);
+		requiredCount = Random.Range(requiredRange.x, requiredRange.y + 1);
 		_coll = GetComponent<Collider2D>();
 	}
 

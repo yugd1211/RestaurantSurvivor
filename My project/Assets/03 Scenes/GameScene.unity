@@ -1243,6 +1243,7 @@ MonoBehaviour:
   - {fileID: -7857476290870025722, guid: 5ea7c4ee257aa4dcdbc28fdfba9418a6, type: 3}
   - {fileID: 879277169793013337, guid: 03e03b6c53b5245a7be7be2f6767179c, type: 3}
   - {fileID: 1862069541389856842, guid: 2538c8d8ccf96416eb268f632b83f225, type: 3}
+  firstSpawn: 5
   cashierVillainCreateTime: 30
   countertopVillainCreateTime: 30
   safeBoxVillainCreateTime: 30
@@ -8459,7 +8460,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7553104bf48e145219f5b739b4c7a89f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 8
+  moveSpeed: 2
   maxStorage: 4
   villainDefense: 1
   anim: {fileID: 1770028180}
@@ -8889,7 +8890,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab7e25287402d4387bec634a442537bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  customerPrefab: {fileID: 1287469906259176449, guid: 6bd20e95c61304f48988be713a37d1e1, type: 3}
+  customerPrefab:
+  - {fileID: 1287469906259176449, guid: 6bd20e95c61304f48988be713a37d1e1, type: 3}
+  - {fileID: 1287469906259176449, guid: 0a814ded992c2441f843d89e559d0863, type: 3}
   cashierDesk: {fileID: 0}
   spawnTime: 1
 --- !u!1 &1832642939
