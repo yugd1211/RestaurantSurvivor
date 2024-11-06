@@ -97,4 +97,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fbef1e46c6d424c3eb21cafaa2be5d48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxCount: 99
+  maxCount: 4

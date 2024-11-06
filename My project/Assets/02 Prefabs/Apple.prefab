@@ -121,4 +121,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 0}
   startPrice: 10
-  maxCount: 10
+  maxCount: 4
