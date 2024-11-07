@@ -9,19 +9,21 @@ public class Food : Carryable
 	public SpriteRenderer spriteRenderer;
 	public int startPrice;
 	public int Price { get; private set; }
-	public int CurrentCount { get; private set; }
-	public int maxCount;
 
 	private void Reset()
 	{
 		startPrice = 10;
-		CurrentCount = 0;
-		maxCount = 4;
 	}
 
-	private void Start()
+	private void Awake()
 	{
 		spriteRenderer = GetComponent<SpriteRenderer>();
+	}
+	
+	public override void Init(int maxCount = 4)
+	{
+		base.Init(maxCount);
+		Price =	startPrice;
 	}
 
 	public void Increase()
