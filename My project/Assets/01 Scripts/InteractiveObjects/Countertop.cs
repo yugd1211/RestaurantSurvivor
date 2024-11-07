@@ -18,7 +18,7 @@ public class Countertop : InteractiveObject, Creatable
 	protected override void Awake()
 	{
 		base.Awake();
-		_maxFood = 4;
+		_maxFood = 6;
 		_currentFoodCount = 0;
 	}
 
@@ -38,6 +38,14 @@ public class Countertop : InteractiveObject, Creatable
 		};
 	}
 
+	public void Upgrade()
+	{
+		createInterval /= 2;
+		_maxFood = 10;
+		if (food)
+			food.maxCount = _maxFood;
+	}
+	
 	private void Update()
 	{
 		DisplayRay();
@@ -105,7 +113,10 @@ public class Countertop : InteractiveObject, Creatable
 	public void Create()
 	{
 		if (!food)
+		{
 			food = Instantiate(foodPrefab, transform.position, Quaternion.identity, transform);
+			food.maxCount = _maxFood;
+		}
 		IncreaseFoodCount();
 	}
 	

@@ -58,8 +58,10 @@ public class Upgrade : MonoBehaviour
         GameManager.Instance.safeBox.DecreaseMoney(countertopUpgradePrice);
 		_isCountertopUpgrade = true;
         GameManager.Instance.level++;
-		foreach (Countertop c in GameManager.Instance.countertops)
-			c.createInterval /= 2;
+        foreach (Countertop c in GameManager.Instance.countertops)
+        {
+	        c.Upgrade();
+        }
 	}
 
 	public void CashierDeskUpgrade()
