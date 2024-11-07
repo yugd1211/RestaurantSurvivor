@@ -1,16 +1,18 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Serialization;
 
 public class Countertop : InteractiveObject, Creatable
 { 
+	[SerializeField]
+	private Food foodPrefab; 
+	private Food _food = null;
 	public float createInterval;
-	public Food foodPrefab; 
-	public Food food = null;
 	
-	private int _maxFood;
+	public int maxFood;
 	private int _currentFoodCount;
 
 	private Coroutine _createFoodCoroutine;
@@ -18,7 +20,7 @@ public class Countertop : InteractiveObject, Creatable
 	protected override void Awake()
 	{
 		base.Awake();
-		_maxFood = 6;
+		maxFood = 6;
 		_currentFoodCount = 0;
 	}
 
@@ -41,67 +43,66 @@ public class Countertop : InteractiveObject, Creatable
 	public void Upgrade()
 	{
 		createInterval /= 2;
-		_maxFood = 10;
-		if (food)
-			food.maxCount = _maxFood;
+		maxFood = 10;
+		if (_food)
+			_food.maxCount = maxFood;
 	}
 	
 	private void Update()
 	{
 		DisplayRay();
-		if (isInteractable == false)
+		if (isInteractable == false || _currentFoodCount <= 0 || _food == null) 
 			return;
-		
+
+		Player player = SearchPlayer();
+		if (player != null)
+			GiveFood(player);
+	}
+
+	private Player SearchPlayer()
+	{
 		List<RaycastHit2D> hits = GetInteracObjsInRayPath();
 		foreach (RaycastHit2D item in hits)
 		{
-			switch (item.collider.tag)
-			{
-				case "Player":
-					if (_currentFoodCount <= 0)
-						break;
-					Player player = item.transform.GetComponent<Player>();
-					if (player == null || player?.carriedItem != null && player.carriedItem is not Food)
-						break;
-					if (player.carriedItem == null)
-						player.SetItem(Instantiate(foodPrefab, transform.position, Quaternion.identity, transform));
-					Food food = player.carriedItem as Food;
-					while (food && _currentFoodCount > 0 && food.maxCount > food.CurrentCount)
-					{
-						food.Increase();
-						DecreaseFoodCount();
-					}
-					break;
-				case "Villain":
-					Debug.Log("Villain");
-					break;
-			}
+			if (item.transform.TryGetComponent(out Player player)) 
+				return player;
 		}
+		return null;
+	}
 	
-		hits.Clear();
+	private void GiveFood(Player player)
+	{
+		if (player.carriedItem == null)
+			player.SetItem(Instantiate(foodPrefab, transform.position, Quaternion.identity, transform));
+		Food food = player.carriedItem as Food;
+		while (food && _currentFoodCount > 0 && food.maxCount > food.CurrentCount)
+		{
+			food.Increase();
+			DecreaseFoodCount();
+		}
 	}
 
 	public void IncreaseFoodCount()
 	{
 		_currentFoodCount++;
 	}
+	
 	public void DecreaseFoodCount()
 	{
 		if (_createFoodCoroutine == null)
-		{
 			_createFoodCoroutine = StartCoroutine(CreateFoodCoroutine(createInterval));
-		}
 		_currentFoodCount--;
 		if (_currentFoodCount <= 0)
 		{
 			_currentFoodCount = 0;
-			Destroy(food.gameObject);
+			StopCoroutine(_createFoodCoroutine);
+			Destroy(_food.gameObject);
 		}
 	}
 	
 	private IEnumerator CreateFoodCoroutine(float interval)
 	{
-		while (_currentFoodCount < _maxFood)
+		while (_currentFoodCount < maxFood)
 		{
 			yield return new WaitForSeconds(interval);
 			if (isInteractable)
@@ -112,12 +113,11 @@ public class Countertop : InteractiveObject, Creatable
 	
 	public void Create()
 	{
-		if (!food)
+		if (!_food)
 		{
-			food = Instantiate(foodPrefab, transform.position, Quaternion.identity, transform);
-			food.maxCount = _maxFood;
+			_food = Instantiate(foodPrefab, transform.position, Quaternion.identity, transform);
+			_food.maxCount = maxFood;
 		}
 		IncreaseFoodCount();
 	}
-	
 }
