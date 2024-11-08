@@ -10283,7 +10283,7 @@ MonoBehaviour:
     rayDist: 2
     layer: 1
   foodPrefab: {fileID: 3080800038674911264, guid: dcd1d5c761ac246d08d9c89ef970e625, type: 3}
-  createInterval: 1.03
+  createInterval: 4
   maxFood: 0
 --- !u!1 &2124749228
 GameObject:

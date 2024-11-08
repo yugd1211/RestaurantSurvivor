@@ -14,7 +14,7 @@ public class CashierDesk : InteractiveObject, Creatable
 	private bool _isAutoSale = false;
 
 	public CashierDeskInteractable guest;
-	private CashierTable _cashierTable;
+	public CashierTable cashierTable;
 	
 	private void Reset()
 	{
@@ -29,7 +29,7 @@ public class CashierDesk : InteractiveObject, Creatable
 
 	private void Start()
 	{
-		_cashierTable = FindObjectOfType<CashierTable>();
+		cashierTable = FindObjectOfType<CashierTable>();
 	}
 	
 	private void Update()
@@ -95,7 +95,7 @@ public class CashierDesk : InteractiveObject, Creatable
 	private void StartSaleCoroutine()
 	{
 		Customer customer = guest as Customer;
-		if (customer == null || _cashierTable == null || _cashierTable.food == null || _saleCoroutine != null)
+		if (customer == null || cashierTable == null || cashierTable.food == null || _saleCoroutine != null)
 			return;
 		_saleCoroutine = StartCoroutine(SaleRoutine(customer));
 	}
@@ -123,7 +123,7 @@ public class CashierDesk : InteractiveObject, Creatable
 	}
 	
 	
-	private bool HasFood() => _cashierTable.food?.CurrentCount > 0;
+	private bool HasFood() => cashierTable.food?.CurrentCount > 0;
 	private bool IsSaleComplete(Customer customer) => customer.CurrentCount < customer.requiredCount;
 
 	private IEnumerator SaleRoutine(Customer customer)
@@ -133,7 +133,7 @@ public class CashierDesk : InteractiveObject, Creatable
 			yield return new WaitForSeconds(saleSpeed);
 			if (!HasFood())
 			{
-				_cashierTable.food = null;
+				cashierTable.food = null;
 				continue;
 			}
 			if (_money == null)
@@ -150,7 +150,7 @@ public class CashierDesk : InteractiveObject, Creatable
 	private void Sale(Customer customer)
 	{
 		_money.Increase();
-		_cashierTable.food.DeCrease();
+		cashierTable.food.DeCrease();
 		customer.IncreaseFood();
 	}
 

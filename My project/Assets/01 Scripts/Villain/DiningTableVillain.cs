@@ -18,14 +18,11 @@ public class DiningTableVillain : Villain, DiningTableInteractable
 
     public override void MoveTo()
     {
-        print("MoveTo Before");
-
         if (diningTable.isOccupied)
         {
             Destroy();
             return;
         }
-        print("MoveTo After");
         diningTable.isOccupied = true;
         diningTable.isInteractable = false;
         transform.position = diningTable.transform.position + Vector3.up;
@@ -34,8 +31,11 @@ public class DiningTableVillain : Villain, DiningTableInteractable
     protected override void Destroy()
     {
         isDestroy = true;
-        if (diningTable != null) 
+        if (diningTable != null)
+        {
+            diningTable.isOccupied = false;
             diningTable.isInteractable = true;
+        }
         base.Destroy();
     }
 }

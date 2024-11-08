@@ -21,8 +21,9 @@ public class CashierVillain : Villain, CashierDeskInteractable
             return;
         }
         GameManager.Instance.cashierDesk.isInteractable = false;
-        transform.position = GameManager.Instance.cashierDesk.transform.position + Vector3.down;
+        GameManager.Instance.cashierDesk.cashierTable.isInteractable = false;
         GameManager.Instance.cashierDesk.guest = this;
+        transform.position = GameManager.Instance.cashierDesk.transform.position + Vector3.down;
     }
 
     protected override void Destroy()
@@ -32,6 +33,7 @@ public class CashierVillain : Villain, CashierDeskInteractable
         if (GameManager.Instance.cashierDesk.guest != this)
             return;
         GameManager.Instance.cashierDesk.isInteractable = true;
+        GameManager.Instance.cashierDesk.cashierTable.isInteractable = true;
         GameManager.Instance.cashierDesk.guest = null;
     }
 }
