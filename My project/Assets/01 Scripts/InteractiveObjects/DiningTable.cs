@@ -91,27 +91,25 @@ public class DiningTable : InteractiveObject, Creatable
 	private IEnumerator DeleteFood()
 	{
 		Food food = _obj as Food;
-		if (food == null)
-			yield break;
 		while (food.CurrentCount > 0)
 		{
 			yield return new WaitForSeconds(1f);
 			for (int i = 0; i < deleteCount; i++)
-				food.DeCrease();
+				if (food.CurrentCount > 0)
+					food.DeCrease();
 		}
 		_obj = null;
 		Create();
-		Destroy((guest as Component)?.gameObject);
-		isOccupied = false;
+		((Customer)guest).Destroy();
+		// Destroy((guest as Component)?.gameObject);
 		if (Random.Range(0, 5) == 0 && VillainManager.Instance.GetVillain<DiningTableInteractable>(out Villain villain))
 		{
+			isOccupied = true;
 			if (villain is DiningTableVillain tableVillain) tableVillain.diningTable = this;
 			villain.MoveTo();
 			guest = villain as DiningTableInteractable;
 			// villain.transform.position = transform.position + Vector3.up;
 		}
-		else
-			guest = null;
 	}
 
 	public void Create()

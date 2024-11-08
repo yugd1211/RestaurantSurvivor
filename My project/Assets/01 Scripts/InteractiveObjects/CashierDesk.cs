@@ -37,9 +37,11 @@ public class CashierDesk : InteractiveObject, Creatable
 		DisplayRay();
 		if (!isInteractable)
 			return;
-		
+
 		if (_isAutoSale && _saleCoroutine == null)
-			_saleCoroutine = StartCoroutine(SearchAvailableTableRoutine());
+		{
+			StartSaleCoroutine();
+		}
 		
 		Player player = SearchPlayer();
 		if (player != null)
@@ -140,9 +142,12 @@ public class CashierDesk : InteractiveObject, Creatable
 				Create();
 			Sale(customer);
 		}
+
 		if (customer.food.CurrentCount == customer.requiredCount)
-			StartCoroutine(SearchAvailableTableRoutine());
-		_saleCoroutine = null;
+		{
+			StartCoroutine(SearchAvailableTableRoutine(customer));
+		}
+
 	}
 	
 	private bool TryGetAvailableTable(out DiningTable table) => TableManager.Instance.GetTable(out table);
@@ -154,17 +159,19 @@ public class CashierDesk : InteractiveObject, Creatable
 		customer.IncreaseFood();
 	}
 
-	private IEnumerator SearchAvailableTableRoutine()
+	private IEnumerator SearchAvailableTableRoutine(Customer customer)
 	{
 		DiningTable table;
+		yield return new WaitForSeconds(1f);
 		while (!TryGetAvailableTable(out table))
 			yield return new WaitForSeconds(1f);
-		AssignTableToCustomer(table);
+		AssignTableToCustomer(customer, table);
+		StopSaleCoroutine();
 	}
 
-	private void AssignTableToCustomer(DiningTable table)
+	private void AssignTableToCustomer(Customer customer, DiningTable table)
 	{
-		if (guest is not Customer customer)
+		if (customer == null || table == null || customer.food.CurrentCount < customer.requiredCount)
 			return;
 		customer.PickTable(table);
 		customer.GoToTable();

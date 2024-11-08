@@ -13,12 +13,12 @@ public class Carryable : MonoBehaviour
 		CurrentCount = 0;
 	}
 	
-	public void Increase()
+	public virtual void Increase()
 	{
 		CurrentCount++;
 	}
 	
-	public void DeCrease()
+	public virtual void DeCrease()
 	{
 		CurrentCount--;
 		if (CurrentCount <= 0)

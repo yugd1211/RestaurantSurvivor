@@ -35,7 +35,7 @@ public class Countertop : InteractiveObject, Creatable
 
 	private void Start()
 	{	
-		_createFoodCoroutine = StartCoroutine(CreateFoodCoroutine(createInterval));
+		_createFoodCoroutine = StartCoroutine(CreateFoodCoroutine());
 	}
 	
 	private void Update()
@@ -104,7 +104,7 @@ public class Countertop : InteractiveObject, Creatable
 	private void DecreaseFoodCount()
 	{
 		if (_createFoodCoroutine == null)
-			_createFoodCoroutine = StartCoroutine(CreateFoodCoroutine(createInterval));
+			_createFoodCoroutine = StartCoroutine(CreateFoodCoroutine());
 		_currentFoodCount--;
 		if (_currentFoodCount <= 0)
 		{
@@ -113,15 +113,16 @@ public class Countertop : InteractiveObject, Creatable
 		}
 	}
 	
-	private IEnumerator CreateFoodCoroutine(float interval)
+	private IEnumerator CreateFoodCoroutine()
 	{
 		while (_currentFoodCount < maxFood)
 		{
-			yield return new WaitForSeconds(interval);
+			yield return new WaitForSeconds(createInterval);
 			if (!isInteractable)
 				continue;
 			if (!_food) 
 				Create();
+			_food.Increase();
 			_currentFoodCount++;
 		}
 		_createFoodCoroutine = null;

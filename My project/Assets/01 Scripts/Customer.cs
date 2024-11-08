@@ -13,26 +13,8 @@ public class Customer : MonoBehaviour, CashierDeskInteractable, DiningTableInter
 	public Vector2Int requiredRange;
 
 	private Collider2D _coll;
-	
-	private int _currentCount;
-	public int CurrentCount 
-	{
-		get => _currentCount;
-		private set
-		{
-			_currentCount = value;
-			if (_currentCount == 0)
-			{
-				if (food)
-					food.spriteRenderer.enabled = false;
-			}
-			else
-			{
-				if (food)
-					food.spriteRenderer.enabled = true;
-			}
-		} 
-	}
+
+	public int CurrentCount { get; private set; }
 
 
 	private void Awake()
@@ -40,11 +22,6 @@ public class Customer : MonoBehaviour, CashierDeskInteractable, DiningTableInter
 		CurrentCount = 0;
 		requiredCount = Random.Range(requiredRange.x, requiredRange.y + 1);
 		_coll = GetComponent<Collider2D>();
-	}
-
-	private void Start()
-	{
-		food.spriteRenderer.enabled = false;
 	}
 
 	public void IncreaseFood()
@@ -63,7 +40,16 @@ public class Customer : MonoBehaviour, CashierDeskInteractable, DiningTableInter
 	public void GoToTable()
 	{
 		StartCoroutine(MoveRoutine());
-		// transform.position = table.transform.position + Vector3.up;
+	}
+
+	public void Destroy()
+	{
+		if (table)
+		{
+			table.isOccupied = false;
+			table.guest = null;
+		}
+		Destroy(gameObject);
 	}
 
 	private void Move(Vector2 dir)
@@ -87,7 +73,6 @@ public class Customer : MonoBehaviour, CashierDeskInteractable, DiningTableInter
 				continue;
 			isHit = true;
 			break;
-			// transform.position = nextPosition;
 		}
 		if (!isHit)
 			transform.position = nextPosition;
@@ -110,6 +95,12 @@ public class Customer : MonoBehaviour, CashierDeskInteractable, DiningTableInter
 
 	private bool IsAtTable(Vector3 dest)
 	{
+		// Vector3 currentPosition = transform.position;
+		//
+		// float newX = currentPosition.x > dest.x ? dest.x : currentPosition.x;
+		// float newY = currentPosition.y < dest.y ? dest.y : currentPosition.y;
+		// transform.position = new Vector3(newX, newY);
+
 		return transform.position == dest;
 	}
 	

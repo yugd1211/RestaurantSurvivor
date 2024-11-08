@@ -11,11 +11,13 @@ public class TableManager : Singleton<TableManager>
 
 	public bool GetTable(out DiningTable outTable)
 	{
+		print("TableManager 1 : " + availableTables.Count);
 		if (availableTables.Count == 0)
 		{
 			outTable = null;
 			return false;
 		}
+		print("TableManager 2");
 		outTable = availableTables[0];
 		availableTables.RemoveAt(0);
 		return true;
@@ -48,7 +50,7 @@ public class TableManager : Singleton<TableManager>
 		tables.ForEach
 		(table =>
 			{
-				if (table.isOccupied && table.guest == null)
+				if ((table.isOccupied && table.guest == null))
 					table.isOccupied = false;
 			}
 		);

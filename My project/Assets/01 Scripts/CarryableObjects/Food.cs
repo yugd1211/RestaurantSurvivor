@@ -18,16 +18,18 @@ public class Food : Carryable
 	private void Awake()
 	{
 		spriteRenderer = GetComponent<SpriteRenderer>();
+		spriteRenderer.enabled = false;
+	}
+
+	public override void Increase()
+	{
+		base.Increase();
+		spriteRenderer.enabled = true;
 	}
 	
 	public override void Init(int maxCount = 4)
 	{
 		base.Init(maxCount);
 		Price =	startPrice;
-	}
-
-	public void Upgrade()
-	{
-		
 	}
 }

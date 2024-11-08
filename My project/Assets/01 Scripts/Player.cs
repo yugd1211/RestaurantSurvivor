@@ -4,7 +4,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
 	public float moveSpeed;
-	public float maxStorage = 4; 
+	public int maxStorage = 4; 
 	public float villainDefense = 1;
 	public Animator anim;
 	public Carryable carriedItem;
@@ -95,6 +95,7 @@ public class Player : MonoBehaviour
 
 	public void SetItem(Carryable item)
 	{
+		item.maxCount = maxStorage;
 		if (carriedItem)
 		{
 			if (item) DestroyImmediate(item.gameObject);
