@@ -16,7 +16,6 @@ public class CustomerSpawner : MonoBehaviour, Creatable
 	public void Create()
 	{
 		int ran = Random.Range(0, 100) < _levelTable[GameManager.Instance.level] ? 0 : 1;
-		print(ran);
 		_currentCustomer = Instantiate(customerPrefab[ran]);
 	}
 

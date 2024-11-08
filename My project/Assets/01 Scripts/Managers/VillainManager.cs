@@ -1,15 +1,11 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 
 public class VillainManager : Singleton<VillainManager>, Creatable
 {
 	public Villain[] villainPrefab;
-	public int firstSpawn = 60;
 	public float cashierVillainCreateTime = 30f;
 	public float countertopVillainCreateTime = 30f; 
 	public float safeBoxVillainCreateTime = 30f;
@@ -26,24 +22,17 @@ public class VillainManager : Singleton<VillainManager>, Creatable
 
 	private void Start()
 	{
-		SetCreateRandomTime();
-		StartCoroutine(FirstOneMinuteCoroutine());
+		_villainDeleteTime = -30;
+		cashierVillainCreateTime = 30;
+		countertopVillainCreateTime = 30;;
+		safeBoxVillainCreateTime = int.MaxValue;
 	}
+	
 	private void SetCreateRandomTime()
 	{
 		cashierVillainCreateTime = Random.Range(30f, 45f);
 		countertopVillainCreateTime = Random.Range(30f, 45f);
 		safeBoxVillainCreateTime = Random.Range(45f, 60f);
-	}
-	
-	private IEnumerator FirstOneMinuteCoroutine()
-	{ 
-		yield return new WaitForSeconds(firstSpawn);
-		if (_isFirstSpawn)
-			yield break;
-		int index = Random.Range(1, 3);
-		Create();
-		villain.MoveTo();
 	}
 	
 	private void Update()

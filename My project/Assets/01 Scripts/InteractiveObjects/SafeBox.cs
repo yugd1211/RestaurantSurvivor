@@ -35,41 +35,40 @@ public class SafeBox : InteractiveObject
 	}
 	
 	private bool _isUpgradePanelOpened = false;
+	private void OpenUpgradePanel(Player player)
+	{
+		if (player == null)
+			return;
+		if (_isUpgradePanelOpened) return;
+		UIManager.Instance.OpenUpgradePanel();
+		_isUpgradePanelOpened = true;
+	}
+
+	private void TakeMoney(Player player)
+	{
+		if (player == null)
+			return;
+		if (player.carriedItem== null || player.carriedItem is not Money playerMoney)
+			return;
+		IncreaseMoney(playerMoney.CurrentCount);
+		Destroy(playerMoney.gameObject);
+	}
 
 	private void Update()
 	{
+		DisplayRay();
 		if (isInteractable == false)
 			return;
-		List<RaycastHit2D> hits = GetInteracObjsInRayPath();
-		DisplayRay();
-		hits.ForEach(item =>
-			{
-				// TODO : Refactor this code :( so fucking dirty
-				if (item.transform.position - transform.position == Vector3.right)
-				{
-					if (!_isUpgradePanelOpened)
-					{
-						UIManager.Instance.OpenUpgradePanel();
-						_isUpgradePanelOpened = true;
-					}
-				}
-				else
-				{
-					_isUpgradePanelOpened = false;
-				}
-				if (!item.transform.TryGetComponent(out Player player) || !player || !player.carriedItem)
-					return;
-				if (player.carriedItem is not Money playerMoney)
-					return;
-                
-				// 돈 상호 작용 영역
-				if (item.transform.position - transform.position == Vector3.down)
-				{
-					IncreaseMoney(playerMoney.CurrentCount);
-					Destroy(playerMoney.gameObject);
-				}
-
-			}
-		);
+		Player player = SearchPlayer();
+		if (player != null)
+		{
+			Vector3 playerDir = player.transform.position - transform.position;
+			if (playerDir == Vector3.right)
+				OpenUpgradePanel(player);
+			else if (playerDir == Vector3.down)
+				TakeMoney(player);
+			else
+				_isUpgradePanelOpened = false;
+		}
 	}
 }

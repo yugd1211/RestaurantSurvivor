@@ -38,8 +38,10 @@ public class CountertopVillain : Villain
         int objRan = Random.Range(0, 2);
         int dirRan = Random.Range(0, GameManager.Instance.countertops[objRan].interZones.Count);
         Vector3 tarPos = GameManager.Instance.countertops[objRan].transform.position;
-        Vector3 dir = GameManager.Instance.countertops[objRan].interZones[dirRan].dir * 
-            GameManager.Instance.countertops[objRan].interZones[dirRan].rayDist;
+        Vector3 dir = GameManager.Instance.countertops[objRan].interZones[dirRan].dir;
+        if (dir.magnitude < 2.0f)
+            dir *= GameManager.Instance.countertops[objRan].interZones[dirRan].rayDist;
+        
         Vector3 pos = tarPos + dir;
         transform.position = pos;
     }

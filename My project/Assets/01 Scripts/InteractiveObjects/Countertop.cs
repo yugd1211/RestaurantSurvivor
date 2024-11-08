@@ -1,21 +1,30 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class Countertop : InteractiveObject, Creatable
 { 
 	[SerializeField]
 	private Food foodPrefab; 
-	private Food _food = null;
-	public float createInterval;
+	private Food _food;
 	
+	
+	public float createInterval;
 	public int maxFood;
-	private int _currentFoodCount;
-
+	
 	private Coroutine _createFoodCoroutine;
+	private int _currentFoodCount;
+	
+	private void Reset()
+	{
+		interZones = new List<InteractionZone>
+		{
+			new InteractionZone {dir = Vector2.left, rayDist = 1f, layer = LayerName.Player},
+			new InteractionZone {dir = Vector2.right, rayDist = 1f, layer = LayerName.Player},
+			new InteractionZone {dir = Vector2.down, rayDist = 1f, layer = LayerName.Player},
+			new InteractionZone {dir = Vector2.down + Vector2.right, rayDist = 1f, layer = LayerName.Player},
+		};
+	}
 
 	protected override void Awake()
 	{
@@ -28,16 +37,39 @@ public class Countertop : InteractiveObject, Creatable
 	{	
 		_createFoodCoroutine = StartCoroutine(CreateFoodCoroutine(createInterval));
 	}
-
-	private void Reset()
+	
+	private void Update()
 	{
-		interZones = new List<InteractionZone>
-		{
-			new InteractionZone {dir = Vector2.left, rayDist = 1f, layer = LayerName.Player},
-			new InteractionZone {dir = Vector2.right, rayDist = 1f, layer = LayerName.Player},
-			new InteractionZone {dir = Vector2.down, rayDist = 1f, layer = LayerName.Player},
-			new InteractionZone {dir = Vector2.down + Vector2.right, rayDist = 1f, layer = LayerName.Player},
-		};
+		DisplayRay();
+
+		if (!isInteractable) 
+			return;
+
+		Player player = SearchPlayer();
+		if (player == null)
+			return;
+		
+		HandlePlayerInteraction(player);
+	}
+	
+	private void HandlePlayerInteraction(Player player)
+	{
+		if (_food == null)
+			return;
+		
+		if (player.carriedItem == null)
+			CreateFoodToPlayer(player);
+		else if (player.carriedItem is Food playerFood)
+			TransferFoodToPlayer(playerFood);
+	}
+	
+	
+		
+	public void Create()
+	{
+
+		_food = Instantiate(foodPrefab, transform.position, Quaternion.identity, transform);
+		_food.maxCount = maxFood;
 	}
 
 	public void Upgrade()
@@ -47,47 +79,29 @@ public class Countertop : InteractiveObject, Creatable
 		if (_food)
 			_food.maxCount = maxFood;
 	}
-	
-	private void Update()
+
+	private void CreateFoodToPlayer(Player player)
 	{
-		DisplayRay();
-		if (isInteractable == false || _currentFoodCount <= 0 || _food == null) 
+		Food newObj = Instantiate(foodPrefab);
+		player.SetItem(newObj);
+	}
+	
+	private void TransferFoodToPlayer(Food playerFood)
+	{
+		if (_food == null)
 			return;
-
-		Player player = SearchPlayer();
-		if (player != null)
-			GiveFood(player);
-	}
-
-	private Player SearchPlayer()
-	{
-		List<RaycastHit2D> hits = GetInteracObjsInRayPath();
-		foreach (RaycastHit2D item in hits)
+		while (playerFood.CurrentCount < playerFood.maxCount)
 		{
-			if (item.transform.TryGetComponent(out Player player)) 
-				return player;
-		}
-		return null;
-	}
-	
-	private void GiveFood(Player player)
-	{
-		if (player.carriedItem == null)
-			player.SetItem(Instantiate(foodPrefab, transform.position, Quaternion.identity, transform));
-		Food food = player.carriedItem as Food;
-		while (food && _currentFoodCount > 0 && food.maxCount > food.CurrentCount)
-		{
-			food.Increase();
+			if (_currentFoodCount <= 0)
+				break;
+			playerFood.Increase();
 			DecreaseFoodCount();
-		}
+		}	
 	}
 
-	public void IncreaseFoodCount()
-	{
-		_currentFoodCount++;
-	}
 	
-	public void DecreaseFoodCount()
+	// TODO : Decrease힘수 빼고싶음
+	private void DecreaseFoodCount()
 	{
 		if (_createFoodCoroutine == null)
 			_createFoodCoroutine = StartCoroutine(CreateFoodCoroutine(createInterval));
@@ -95,7 +109,6 @@ public class Countertop : InteractiveObject, Creatable
 		if (_currentFoodCount <= 0)
 		{
 			_currentFoodCount = 0;
-			StopCoroutine(_createFoodCoroutine);
 			Destroy(_food.gameObject);
 		}
 	}
@@ -105,19 +118,13 @@ public class Countertop : InteractiveObject, Creatable
 		while (_currentFoodCount < maxFood)
 		{
 			yield return new WaitForSeconds(interval);
-			if (isInteractable)
+			if (!isInteractable)
+				continue;
+			if (!_food) 
 				Create();
+			_currentFoodCount++;
 		}
 		_createFoodCoroutine = null;
 	}
-	
-	public void Create()
-	{
-		if (!_food)
-		{
-			_food = Instantiate(foodPrefab, transform.position, Quaternion.identity, transform);
-			_food.maxCount = maxFood;
-		}
-		IncreaseFoodCount();
-	}
+
 }

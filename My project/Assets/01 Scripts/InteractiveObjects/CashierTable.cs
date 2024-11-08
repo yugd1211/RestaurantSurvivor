@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
-public class CashierTable : InteractiveObject
+public class CashierTable : InteractiveObject, Creatable
 {
 	public Food prefab; 
-	public Food food = null;
+	public Food food;
+	
 	private void Reset()
 	{
 		interZones = new List<InteractionZone>
@@ -14,34 +14,39 @@ public class CashierTable : InteractiveObject
 			new InteractionZone {dir = Vector2.up + Vector2.right, rayDist = 1f, layer = LayerName.Player},
 		};
 	}
-	
+
+
 	private void Update()
-	{		
+	{
 		DisplayRay();
 
 		if (isInteractable == false)
 			return;
-		List<RaycastHit2D> hits = GetInteracObjsInRayPath();
-		foreach (RaycastHit2D item in hits)
+		
+		Player player = SearchPlayer();
+		if (player?.carriedItem is not Food playerFood || playerFood.CurrentCount <= 0)
+			return;
+		
+		if (!food)
+			Create();
+		
+		TransferFoodToDesk(playerFood);
+	}
+	
+	public void Create()
+	{
+		food = Instantiate(prefab, transform.position, Quaternion.identity, transform);
+		food.maxCount = 99;
+	}
+
+	private void TransferFoodToDesk(Food playerFood)
+	{
+		while (playerFood != null && playerFood.CurrentCount > 0)
 		{
-			if (item.transform.TryGetComponent(out Player player))
-			{
-				if (!player || player.carriedItem is not Food)
-					break;
-				if (!food)
-				{
-					food = Instantiate(prefab, transform.position, Quaternion.identity, transform);
-					food.maxCount = 99;
-				}
-				Food playerFood = player.carriedItem as Food;
-				while (playerFood.CurrentCount > 0)
-				{
-					if (food.CurrentCount >= food.maxCount)
-						break;
-					food.Increase();
-					playerFood.DeCrease();
-				}
-			}
+			if (food.CurrentCount >= food.maxCount)
+				break;
+			food.Increase();
+			playerFood.DeCrease();
 		}
 	}
 }

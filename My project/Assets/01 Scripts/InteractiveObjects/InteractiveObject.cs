@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 [Serializable]
@@ -29,14 +27,15 @@ public abstract class InteractiveObject : MonoBehaviour
 	{
 		isInteractable = true;
 	}
-	protected RaycastHit2D FindInteractableAtRay(InteractionZone interZone)
+
+	private RaycastHit2D FindInteractableAtRay(InteractionZone interZone)
 	{
 		return Physics2D.Raycast(transform.position, interZone.dir, interZone.rayDist, LayerMask.GetMask(interZone.layer.ToString()));
 	}
 	
-	protected List<RaycastHit2D> GetInteracObjsInRayPath()
+	protected List<RaycastHit2D> FindInteractableObjects()
 	{		
-		List<RaycastHit2D> hits = new List<RaycastHit2D>();
+		List<RaycastHit2D> hits = new ();
 		interZones.ForEach(interZone =>
 			{
 				RaycastHit2D hit = FindInteractableAtRay(interZone);
@@ -45,6 +44,17 @@ public abstract class InteractiveObject : MonoBehaviour
 			}
 		);
 		return hits;
+	}
+	
+	protected Player SearchPlayer()
+	{
+		List<RaycastHit2D> hits = FindInteractableObjects();
+		foreach (RaycastHit2D item in hits)
+		{
+			if (item.transform.TryGetComponent(out Player player)) 
+				return player;
+		}
+		return null;
 	}
 
 	protected void DisplayRay()

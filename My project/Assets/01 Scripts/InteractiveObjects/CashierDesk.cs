@@ -1,16 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class CashierDesk : InteractiveObject, Creatable
 {
-	public Money prefab; 
-	public Money money = null;
-	public CashierDeskInteractable guest = null;
+	[SerializeField]
+	private Money moneyPrefab; 
+	private Money _money;
+	
 	public float saleSpeed = 0.5f;
-	private CashierTable _cashierTable;
 	private Coroutine _saleCoroutine;
-	private bool isAutoSale = false;
+	private bool _isAutoSale = false;
+
+	public CashierDeskInteractable guest;
+	private CashierTable _cashierTable;
 	
 	private void Reset()
 	{
@@ -22,135 +26,148 @@ public class CashierDesk : InteractiveObject, Creatable
 		};
 		saleSpeed = 0.5f;
 	}
-	
-	public void OnAutoSale()
-	{
-		isAutoSale = true;
-	}
-	
-	public void SetCustomer(Customer customer)
-	{	
-		this.guest = customer;
-		customer.transform.SetParent(transform);
-		customer.transform.position = transform.position + Vector3.down;
-		// guest.transform.localPosition = Vector3.down;
-	}
 
 	private void Start()
 	{
 		_cashierTable = FindObjectOfType<CashierTable>();
 	}
-
+	
 	private void Update()
 	{
 		DisplayRay();
-		if (isInteractable == false)
+		if (!isInteractable)
 			return;
-		if (isAutoSale)
-			_saleTime += Time.deltaTime;
-		List<RaycastHit2D> hits = GetInteracObjsInRayPath();
-		hits.ForEach(item =>
-		{
-			if (item.transform != null)
-			{
-				if (item.transform.TryGetComponent(out Player player))
-				{
-					// 돈영역
-					if (item.transform.position - transform.position == Vector3.left)
-					{
-						if (money == null)
-							return;
-						Money playerMoney = player.carriedItem as Money;
-						if (player.carriedItem == null)
-						{
-							player.carriedItem = money;
-							money.transform.SetParent(player.transform);
-							money.transform.localPosition = Vector3.zero;
-							money = null;
-						}
-						else if (playerMoney != null && money != null)
-						{
-							while (money.CurrentCount > 0 && playerMoney.CurrentCount < playerMoney.maxCount)
-							{
-								playerMoney.Increase(); 
-								money.DeCrease();
-							}
-							if (money.CurrentCount == 0)
-								Destroy(money.gameObject);
-
-						}
-					}
-					// 손님 상호 작용 영역
-					else if (!isAutoSale && (item.transform.position - transform.position == Vector3.up ||
-					                        item.transform.position - transform.position == Vector3.up + Vector3.right))
-					{
-						if (this.guest == null || _cashierTable == null || _cashierTable.food == null)
-							return;
-						_saleTime += Time.deltaTime;
-						if (_saleCoroutine == null)
-							_saleCoroutine = StartCoroutine(SaleRoutine());
-					}
-					else
-						_saleTime = 0;
-				}
-			}
-		});
+		
+		if (_isAutoSale && _saleCoroutine == null)
+			_saleCoroutine = StartCoroutine(SearchAvailableTableRoutine());
+		
+		Player player = SearchPlayer();
+		if (player != null)
+			HandlePlayerInteraction(player);
 	}
 
-	private float _saleTime = 0f;
-
-	private IEnumerator SaleRoutine()
+	
+	public void Upgrade()
 	{
-		Customer guest = this.guest as Customer;
-		while (guest.CurrentCount < guest.requiredCount)
-		{
-			if (_saleTime < saleSpeed)
-			{
-				yield return null;
-				continue;
-			}
-			_saleTime = 0;
-			if (_cashierTable.food.CurrentCount <= 0)
-			{
-				_cashierTable.food = null;
-				continue;
-			}
-			if (money == null)
-				Create();
-			money.Increase();
-			_cashierTable.food.DeCrease();
-			guest.IncreaseFood();
-		}
-		if (guest.food.CurrentCount == guest.requiredCount)
-			StartCoroutine(SearchAvailableTableRoutine());
-		_saleCoroutine = null;
-	}
-
-	private IEnumerator SearchAvailableTableRoutine()
-	{
-		DiningTable table = null;
-		while (true)
-		{
-			if (TableManager.Instance.GetTable(out table))
-				break;
-			yield return new WaitForSeconds(1f);
-		}
-		Customer guest = this.guest as Customer;
-		if (this.guest == null)
-			yield break;
-		guest.PickTable(table);
-		guest.GoToTable();
-		this.guest = null;
-		StopAllCoroutines();
+		_isAutoSale = true;
+		saleSpeed = 0.1f;
 	}
 	
 	public void Create()
 	{
-		if (!money)
+		if (_money) 
+			return;
+		_money = Instantiate(moneyPrefab, transform.position + Vector3.left, Quaternion.identity, transform);
+		_money.Init(99);
+	}
+	
+	private void CreateMoneyToPlayer(Player player)
+	{
+		Money newObj = Instantiate(moneyPrefab);
+		player.SetItem(newObj);
+	}
+
+	private void TransferMoneyToPlayer(Money playerMoney)
+	{
+		if (_money == null)
+			return;
+		while (playerMoney.CurrentCount < playerMoney.maxCount)
 		{
-			money = Instantiate(prefab, transform.position + Vector3.left, Quaternion.identity, transform);
-			money.maxCount = 99;
+			if (_money.CurrentCount <= 0)
+				return;
+			playerMoney.Increase(); 
+			_money.DeCrease();
 		}
-		money.Increase();
+	}
+	
+	private void HandleMoneyInteraction(Player player)
+	{
+		if (_money == null)
+			return;
+	
+		if (player.carriedItem == null)
+			CreateMoneyToPlayer(player);
+		
+		if (player.carriedItem is Money playerMoney)
+			TransferMoneyToPlayer(playerMoney);
+	}
+
+	private void StartSaleCoroutine()
+	{
+		Customer customer = guest as Customer;
+		if (customer == null || _cashierTable == null || _cashierTable.food == null || _saleCoroutine != null)
+			return;
+		_saleCoroutine = StartCoroutine(SaleRoutine(customer));
+	}
+
+	private void StopSaleCoroutine()
+	{
+		if (_saleCoroutine == null) 
+			return;
+		StopCoroutine(_saleCoroutine);
+		_saleCoroutine = null;
+	}
+
+	private void HandlePlayerInteraction(Player player)
+	{
+		Vector3 playerDir = player.transform.position - transform.position;
+		if (playerDir == Vector3.left)
+			HandleMoneyInteraction(player);
+		else if (!_isAutoSale)
+		{
+			if (playerDir == Vector3.up || playerDir == new Vector3(1, 1, 0))
+				StartSaleCoroutine();
+			else
+				StopSaleCoroutine();
+		}
+	}
+	
+	
+	private bool HasFood() => _cashierTable.food?.CurrentCount > 0;
+	private bool IsSaleComplete(Customer customer) => customer.CurrentCount < customer.requiredCount;
+
+	private IEnumerator SaleRoutine(Customer customer)
+	{
+		while (IsSaleComplete(customer))
+		{
+			yield return new WaitForSeconds(saleSpeed);
+			if (!HasFood())
+			{
+				_cashierTable.food = null;
+				continue;
+			}
+			if (_money == null)
+				Create();
+			Sale(customer);
+		}
+		if (customer.food.CurrentCount == customer.requiredCount)
+			StartCoroutine(SearchAvailableTableRoutine());
+		_saleCoroutine = null;
+	}
+	
+	private bool TryGetAvailableTable(out DiningTable table) => TableManager.Instance.GetTable(out table);
+
+	private void Sale(Customer customer)
+	{
+		_money.Increase();
+		_cashierTable.food.DeCrease();
+		customer.IncreaseFood();
+	}
+
+	private IEnumerator SearchAvailableTableRoutine()
+	{
+		DiningTable table;
+		while (!TryGetAvailableTable(out table))
+			yield return new WaitForSeconds(1f);
+		AssignTableToCustomer(table);
+	}
+
+	private void AssignTableToCustomer(DiningTable table)
+	{
+		if (guest is not Customer customer)
+			return;
+		customer.PickTable(table);
+		customer.GoToTable();
+		guest = null;
 	}
 }

@@ -71,8 +71,7 @@ public class Upgrade : MonoBehaviour
         GameManager.Instance.safeBox.DecreaseMoney(cashierDeskUpgradePrice);
 		_isCashierDeskUpgrade = true;
         GameManager.Instance.level++;
-		GameManager.Instance.cashierDesk.OnAutoSale();
-		GameManager.Instance.cashierDesk.saleSpeed = 0.1f;
+		GameManager.Instance.cashierDesk.Upgrade();
 	}
 	
 	public void DiningTableUpgrade()

@@ -26,20 +26,6 @@ public class Food : Carryable
 		Price =	startPrice;
 	}
 
-	public void Increase()
-	{
-		CurrentCount++;
-	}
-	
-	public void DeCrease()
-	{
-		CurrentCount--;
-		if (CurrentCount <= 0)
-		{
-			Destroy(gameObject);
-		}
-	}
-
 	public void Upgrade()
 	{
 		

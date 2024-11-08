@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class Trashbin : InteractiveObject
 {
+	private float _deleteTime = 1f;
+	private float _currentTime = 0f;
 	private void Reset()
 	{ 
 		interZones = new List<InteractionZone>
@@ -22,17 +24,24 @@ public class Trashbin : InteractiveObject
 	}
 	private void Update()
 	{
-		List<RaycastHit2D> hits = GetInteracObjsInRayPath();
 		DisplayRay();
-		foreach (RaycastHit2D item in hits)
-		{
-			if (item.transform.TryGetComponent(out Player player))
-			{
-				if (!player || player.carriedItem == null)
-					break;
-				Destroy(player.carriedItem.gameObject);
-				player.carriedItem = null;
-			}
-		}
+
+		Player player = SearchPlayer();
+		if (player == null)
+			_currentTime = 0;
+		else
+			_currentTime += Time.deltaTime;
+		if (_currentTime >= _deleteTime)
+			DeletePlayerCarriedItem(player);
+	}
+	
+	private void DeletePlayerCarriedItem(Player player)
+	{
+		if (player == null)
+			return;
+		if (!player.carriedItem)
+			return;
+		Destroy(player.carriedItem.gameObject);
+		player.carriedItem = null;
 	}
 }

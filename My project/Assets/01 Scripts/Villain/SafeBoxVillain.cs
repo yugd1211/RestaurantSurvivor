@@ -41,6 +41,13 @@ public class SafeBoxVillain : Villain
             Destroy(gameObject);
         }
     }
+    
+    protected override void Destroy()
+    {
+        isDestroy = true;
+        GameManager.Instance.safeBox.isInteractable = true;
+        base.Destroy();
+    }
 
     private bool SearchSafeBox(out SafeBox safeBox)
     {
