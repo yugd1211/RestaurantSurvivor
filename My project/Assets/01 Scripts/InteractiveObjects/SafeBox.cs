@@ -39,6 +39,7 @@ public class SafeBox : InteractiveObject
 	{
 		if (player == null)
 			return;
+		print(_isUpgradePanelOpened);
 		if (_isUpgradePanelOpened) return;
 		UIManager.Instance.OpenUpgradePanel();
 		_isUpgradePanelOpened = true;
@@ -63,12 +64,13 @@ public class SafeBox : InteractiveObject
 		if (player != null)
 		{
 			Vector3 playerDir = player.transform.position - transform.position;
+			print(playerDir);
 			if (playerDir == Vector3.right)
 				OpenUpgradePanel(player);
 			else if (playerDir == Vector3.down)
 				TakeMoney(player);
-			else
-				_isUpgradePanelOpened = false;
 		}
+		else
+			_isUpgradePanelOpened = false;
 	}
 }
