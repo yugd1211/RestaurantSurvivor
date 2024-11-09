@@ -34,7 +34,7 @@ public class Customer : MonoBehaviour, CashierDeskInteractable, DiningTableInter
 	{ 
 		this.table = table;
 		table.isOccupied = true;
-		table.guest = this;
+		table.Guest = this;
 	}
 
 	public void GoToTable()
@@ -47,7 +47,7 @@ public class Customer : MonoBehaviour, CashierDeskInteractable, DiningTableInter
 		if (table)
 		{
 			table.isOccupied = false;
-			table.guest = null;
+			table.Guest = null;
 		}
 		Destroy(gameObject);
 	}

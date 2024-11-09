@@ -3,10 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class Trashbin : InteractiveObject
 {
-	private float _deleteTime = 1f;
+	public float deleteTime = 1f;
 	private float _currentTime = 0f;
 	private void Reset()
 	{ 
@@ -27,18 +28,24 @@ public class Trashbin : InteractiveObject
 		DisplayRay();
 
 		Player player = SearchPlayer();
-		if (player == null)
-			_currentTime = 0;
+		if (player != null)
+			HandlePlayerItemDeletion(player);
 		else
-			_currentTime += Time.deltaTime;
-		if (_currentTime >= _deleteTime)
+			_currentTime = 0f;
+	}
+
+	private void HandlePlayerItemDeletion(Player player)
+	{
+		_currentTime += Time.deltaTime;
+		if (_currentTime >= deleteTime)
+		{
 			DeletePlayerCarriedItem(player);
+			_currentTime = 0f;
+		}
 	}
 	
 	private void DeletePlayerCarriedItem(Player player)
 	{
-		if (player == null)
-			return;
 		if (!player.carriedItem)
 			return;
 		Destroy(player.carriedItem.gameObject);

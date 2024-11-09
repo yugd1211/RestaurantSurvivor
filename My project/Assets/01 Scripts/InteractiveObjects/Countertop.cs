@@ -44,10 +44,8 @@ public class Countertop : InteractiveObject, Creatable
 			return;
 
 		Player player = SearchPlayer();
-		if (player == null)
-			return;
-		
-		HandlePlayerInteraction(player);
+		if (player != null)
+			HandlePlayerInteraction(player);
 	}
 	
 	private void HandlePlayerInteraction(Player player)
@@ -65,7 +63,6 @@ public class Countertop : InteractiveObject, Creatable
 		
 	public void Create()
 	{
-
 		_food = Instantiate(foodPrefab, transform.position, Quaternion.identity, transform);
 		_food.maxCount = maxFood;
 	}
@@ -93,9 +90,7 @@ public class Countertop : InteractiveObject, Creatable
 		{
 			if (_food.CurrentCount <= 0)
 				break;
-
 			playerFood.Increase();
-		
 			if (_createFoodCoroutine == null)
 				_createFoodCoroutine = StartCoroutine(CreateFoodCoroutine());
 		

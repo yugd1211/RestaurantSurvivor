@@ -1,7 +1,4 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class SafeBox : InteractiveObject
@@ -39,8 +36,8 @@ public class SafeBox : InteractiveObject
 	{
 		if (player == null)
 			return;
-		print(_isUpgradePanelOpened);
-		if (_isUpgradePanelOpened) return;
+		if (_isUpgradePanelOpened)
+			return;
 		UIManager.Instance.OpenUpgradePanel();
 		_isUpgradePanelOpened = true;
 	}
@@ -64,7 +61,6 @@ public class SafeBox : InteractiveObject
 		if (player != null)
 		{
 			Vector3 playerDir = player.transform.position - transform.position;
-			print(playerDir);
 			if (playerDir == Vector3.right)
 				OpenUpgradePanel(player);
 			else if (playerDir == Vector3.down)

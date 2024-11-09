@@ -48,7 +48,7 @@ public class TableManager : Singleton<TableManager>
 		tables.ForEach
 		(table =>
 			{
-				if ((table.isOccupied && table.guest == null))
+				if ((table.isOccupied && table.Guest == null))
 					table.isOccupied = false;
 			}
 		);
