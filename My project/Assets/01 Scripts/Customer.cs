@@ -95,11 +95,11 @@ public class Customer : MonoBehaviour, CashierDeskInteractable, DiningTableInter
 
 	private bool IsAtTable(Vector3 dest)
 	{
-		// Vector3 currentPosition = transform.position;
-		//
-		// float newX = currentPosition.x > dest.x ? dest.x : currentPosition.x;
-		// float newY = currentPosition.y < dest.y ? dest.y : currentPosition.y;
-		// transform.position = new Vector3(newX, newY);
+		Vector3 currentPosition = transform.position;
+		
+		float newX = currentPosition.x > dest.x ? dest.x : currentPosition.x;
+		float newY = currentPosition.y < dest.y ? dest.y : currentPosition.y;
+		transform.position = new Vector3(newX, newY);
 
 		return transform.position == dest;
 	}

@@ -85,11 +85,13 @@ public class VillainManager : Singleton<VillainManager>, Creatable
 
 	public bool GetVillain<T>(out Villain villain)
 	{
+		print("GET VILLAIN first");
 		if (this.villain)
 		{ 
 			villain = null;
 			return false;
 		}
+		print("GET VILLAIN first2");
 		for (int i = 0; i < villainPrefab.Length; i++)
 		{
 			if (villainPrefab[i] is T)
@@ -100,6 +102,8 @@ public class VillainManager : Singleton<VillainManager>, Creatable
 				return true;
 			}
 		}
+		print("GET VILLAIN second");
+
 		villain = null;
 		return false;
 	}

@@ -23,12 +23,12 @@ public class Upgrade : MonoBehaviour
 
 	private void Start()
 	{
-		playerSpeedUpgradePrice = 1;
-			playerStorageUpgradePrice = 1;
-		playerVillainDefenseUpgradePrice = 1;
-			countertopUpgradePrice = 1;
-		cashierDeskUpgradePrice = 1;
-			diningTableUpgradePrice = 1;
+		// playerSpeedUpgradePrice = 1;
+		// 	playerStorageUpgradePrice = 1;
+		// playerVillainDefenseUpgradePrice = 1;
+		// 	countertopUpgradePrice = 1;
+		// cashierDeskUpgradePrice = 1;
+		// 	diningTableUpgradePrice = 1;
 	}
 
 	public void PlayerSpeedUpgrade()

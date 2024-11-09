@@ -61,7 +61,6 @@ public class DiningTable : InteractiveObject, Creatable
 						return;
 					if (player.carriedItem == null)
 					{
-						print("플레이어에게 쓰레기 전달 null");
 						Trash newObj = Instantiate(trashPrefab, transform.position, Quaternion.identity, transform);
 						player.SetItem(newObj);
 						newObj.maxCount = player.maxStorage;
@@ -72,25 +71,16 @@ public class DiningTable : InteractiveObject, Creatable
 					}
 					else
 					{
-						print("플레이어에게 쓰레기 전달 이미있음 1");
-
 						if (playerTrash == null) 
 							return;
-						print("플레이어에게 쓰레기 전달 이미있음 2");
 						for (int i = 0; i < myTrash.CurrentCount; i++)
 						{
-							print("플레이어에게 쓰레기 전달 이미있음 3");
-							print($"before 쓰레기 {playerTrash.CurrentCount}, {playerTrash.maxCount}, {playerTrash.CurrentCount >= playerTrash.maxCount}");;
 							if (playerTrash.CurrentCount >= playerTrash.maxCount)
 								break;
 
 							playerTrash.Increase();
 							myTrash.DeCrease();
-							print($"player = {playerTrash.CurrentCount}, myTrash = {myTrash.CurrentCount}");
-							print($"after 쓰레기 {playerTrash.CurrentCount}, {playerTrash.maxCount}, {playerTrash.CurrentCount >= playerTrash.maxCount}");;
-							print("플레이어에게 쓰레기 전달 이미있음 4");
 						}
-						print("플레이어에게 쓰레기 전달 이미있음 5");
 					}
 				}
 			}
@@ -117,8 +107,8 @@ public class DiningTable : InteractiveObject, Creatable
 		((Customer)guest).Destroy();
 		if (Random.Range(0, 5) == 0 && VillainManager.Instance.GetVillain<DiningTableInteractable>(out Villain villain))
 		{
-			isOccupied = true;
-			if (villain is DiningTableVillain tableVillain) tableVillain.diningTable = this;
+			if (villain is DiningTableVillain tableVillain) 
+				tableVillain.diningTable = this;
 			villain.MoveTo();
 			guest = villain as DiningTableInteractable;
 		}
