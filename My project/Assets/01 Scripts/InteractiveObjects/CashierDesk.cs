@@ -124,7 +124,6 @@ public class CashierDesk : InteractiveObject, Creatable
 		}
 	}
 	
-	
 	private bool HasFood() => cashierTable.food?.CurrentCount > 0;
 	private bool IsSaleComplete(Customer customer) => customer.CurrentCount < customer.requiredCount;
 

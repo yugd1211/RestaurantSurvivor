@@ -23,6 +23,7 @@ public class CashierTable : InteractiveObject, Creatable
 		if (isInteractable == false)
 			return;
 		
+		
 		Player player = SearchPlayer();
 		if (player?.carriedItem is not Food playerFood || playerFood.CurrentCount <= 0)
 			return;
@@ -30,7 +31,7 @@ public class CashierTable : InteractiveObject, Creatable
 		if (!food)
 			Create();
 		
-		TransferFoodToDesk(playerFood);
+		ReceiveFoodFromPlayer(player);
 	}
 	
 	public void Create()
@@ -39,9 +40,11 @@ public class CashierTable : InteractiveObject, Creatable
 		food.maxCount = 99;
 	}
 
-	private void TransferFoodToDesk(Food playerFood)
+	private void ReceiveFoodFromPlayer(Player player)
 	{
-		while (playerFood != null && playerFood.CurrentCount > 0)
+		if (player?.carriedItem is not Food playerFood)
+			return;
+		while (playerFood.CurrentCount > 0)
 		{
 			if (food.CurrentCount >= food.maxCount)
 				break;

@@ -13,7 +13,6 @@ public class Countertop : InteractiveObject, Creatable
 	public int maxFood;
 	
 	private Coroutine _createFoodCoroutine;
-	private int _currentFoodCount;
 	
 	private void Reset()
 	{
@@ -30,8 +29,7 @@ public class Countertop : InteractiveObject, Creatable
 	{
 		base.Awake();
 		maxFood = 6;
-		_currentFoodCount = 0;
-	}
+ 	}
 
 	private void Start()
 	{	
@@ -90,32 +88,24 @@ public class Countertop : InteractiveObject, Creatable
 	{
 		if (_food == null)
 			return;
+
 		while (playerFood.CurrentCount < playerFood.maxCount)
 		{
-			if (_currentFoodCount <= 0)
+			if (_food.CurrentCount <= 0)
 				break;
-			playerFood.Increase();
-			DecreaseFoodCount();
-		}	
-	}
 
-	
-	// TODO : Decrease힘수 빼고싶음
-	private void DecreaseFoodCount()
-	{
-		if (_createFoodCoroutine == null)
-			_createFoodCoroutine = StartCoroutine(CreateFoodCoroutine());
-		_currentFoodCount--;
-		if (_currentFoodCount <= 0)
-		{
-			_currentFoodCount = 0;
-			Destroy(_food.gameObject);
+			playerFood.Increase();
+		
+			if (_createFoodCoroutine == null)
+				_createFoodCoroutine = StartCoroutine(CreateFoodCoroutine());
+		
+			_food.DeCrease();
 		}
 	}
 	
 	private IEnumerator CreateFoodCoroutine()
 	{
-		while (_currentFoodCount < maxFood)
+		while (!_food || _food.CurrentCount < _food.maxCount)
 		{
 			yield return new WaitForSeconds(createInterval);
 			if (!isInteractable)
@@ -123,9 +113,7 @@ public class Countertop : InteractiveObject, Creatable
 			if (!_food) 
 				Create();
 			_food.Increase();
-			_currentFoodCount++;
 		}
 		_createFoodCoroutine = null;
 	}
-
 }

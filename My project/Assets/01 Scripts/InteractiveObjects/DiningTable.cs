@@ -61,27 +61,36 @@ public class DiningTable : InteractiveObject, Creatable
 						return;
 					if (player.carriedItem == null)
 					{
-						player.carriedItem = myTrash;
-						myTrash.transform.SetParent(player.transform);
-						myTrash.transform.localPosition = Vector3.zero;
-						_obj = null;
+						print("플레이어에게 쓰레기 전달 null");
+						Trash newObj = Instantiate(trashPrefab, transform.position, Quaternion.identity, transform);
+						player.SetItem(newObj);
+						newObj.maxCount = player.maxStorage;
+						// player.carriedItem = myTrash;
+						// myTrash.transform.SetParent(player.transform);
+						// myTrash.transform.localPosition = Vector3.zero;
+						// _obj = null;
 					}
 					else
 					{
+						print("플레이어에게 쓰레기 전달 이미있음 1");
+
 						if (playerTrash == null) 
 							return;
+						print("플레이어에게 쓰레기 전달 이미있음 2");
 						for (int i = 0; i < myTrash.CurrentCount; i++)
 						{
+							print("플레이어에게 쓰레기 전달 이미있음 3");
+							print($"before 쓰레기 {playerTrash.CurrentCount}, {playerTrash.maxCount}, {playerTrash.CurrentCount >= playerTrash.maxCount}");;
 							if (playerTrash.CurrentCount >= playerTrash.maxCount)
 								break;
+
 							playerTrash.Increase();
 							myTrash.DeCrease();
+							print($"player = {playerTrash.CurrentCount}, myTrash = {myTrash.CurrentCount}");
+							print($"after 쓰레기 {playerTrash.CurrentCount}, {playerTrash.maxCount}, {playerTrash.CurrentCount >= playerTrash.maxCount}");;
+							print("플레이어에게 쓰레기 전달 이미있음 4");
 						}
-						if (myTrash.CurrentCount <= 0)
-						{
-							Destroy(myTrash.gameObject);
-							myTrash = null;
-						}
+						print("플레이어에게 쓰레기 전달 이미있음 5");
 					}
 				}
 			}
@@ -91,24 +100,27 @@ public class DiningTable : InteractiveObject, Creatable
 	private IEnumerator DeleteFood()
 	{
 		Food food = _obj as Food;
+		int count = _obj.CurrentCount;
 		while (food.CurrentCount > 0)
 		{
 			yield return new WaitForSeconds(1f);
 			for (int i = 0; i < deleteCount; i++)
+			{
 				if (food.CurrentCount > 0)
 					food.DeCrease();
+			}
 		}
 		_obj = null;
 		Create();
+		for (int i = 0; i < count; i++)
+			_obj.Increase();
 		((Customer)guest).Destroy();
-		// Destroy((guest as Component)?.gameObject);
 		if (Random.Range(0, 5) == 0 && VillainManager.Instance.GetVillain<DiningTableInteractable>(out Villain villain))
 		{
 			isOccupied = true;
 			if (villain is DiningTableVillain tableVillain) tableVillain.diningTable = this;
 			villain.MoveTo();
 			guest = villain as DiningTableInteractable;
-			// villain.transform.position = transform.position + Vector3.up;
 		}
 	}
 
@@ -118,6 +130,5 @@ public class DiningTable : InteractiveObject, Creatable
 			return;
 		Trash newObj = Instantiate(trashPrefab, transform.position, Quaternion.identity, transform);
 		_obj = newObj;
-		newObj.Increase();
 	}
 }
