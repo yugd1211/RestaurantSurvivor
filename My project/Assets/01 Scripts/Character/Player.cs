@@ -3,117 +3,123 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-	public float moveSpeed;
-	public int maxStorage = 4; 
-	public float villainDefense = 1;
-	public Animator anim;
-	public Carryable carriedItem;
-	
-	private Coroutine _moveCoroutine; 
-	private CashierTable _cashierTable;
-	private Vector2 _moveDir;
-	private bool _isMoving = true;
-	
-	private void Reset()
-	{
-		moveSpeed = 2f;
-		anim = GetComponent<Animator>();
-		_cashierTable = FindObjectOfType<CashierTable>();
-	}
-	
-	private void Start()
-	{
-		_moveCoroutine = StartCoroutine(CoMovePossible());
-		_cashierTable = FindObjectOfType<CashierTable>();
-	}
+    public float moveSpeed;
+    public int maxStorage = 4;
+    public float villainDefense = 1;
+    public Animator anim;
+    public Carryable carriedItem;
 
-	private void Update()
-	{
-		_moveDir = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")).normalized;
-		if (_isMoving)
-			Move();
-	}
+    private Coroutine _moveCoroutine;
+    private CashierTable _cashierTable;
+    private Vector2 _moveDir;
+    private bool _isMoving = true;
 
-	private void Move()
-	{
-		if (GameManager.Instance.isPause)
-			return;
-		if (_moveDir == Vector2.zero)
-			return;
-			// 방향에 따른 애니메이션 트리거 설정
-			if (_moveDir == Vector2.up)
-			{
-				if (!anim.GetCurrentAnimatorClipInfo(0)[0].clip.name.Equals("PlayerUp"))
-					anim.SetTrigger("UpTrigger");
-			}
-			else if (_moveDir == Vector2.down)
-			{
-				if (!anim.GetCurrentAnimatorClipInfo(0)[0].clip.name.Equals("PlayerDown"))
-					anim.SetTrigger("DownTrigger");
-			}
-			else if (_moveDir == Vector2.left)
-			{
-				if (!anim.GetCurrentAnimatorClipInfo(0)[0].clip.name.Equals("PlayerLeft"))
-					anim.SetTrigger("LeftTrigger");
-			}
-			else if (_moveDir == Vector2.right)
-			{
-				if (!anim.GetCurrentAnimatorClipInfo(0)[0].clip.name.Equals("PlayerRight"))
-					anim.SetTrigger("RightTrigger");
-			}
+    private void Reset()
+    {
+        moveSpeed = 2f;
+        anim = GetComponent<Animator>();
+        _cashierTable = FindObjectOfType<CashierTable>();
+    }
 
-			else
-				return;
-		if (!CheckPath(_moveDir))
-			return;
+    private void Start()
+    {
+        _moveCoroutine = StartCoroutine(CoMovePossible());
+        _cashierTable = FindObjectOfType<CashierTable>();
+    }
 
-		transform.position += new Vector3(_moveDir.x, _moveDir.y, 0);
-		_isMoving = false;
-	}
+    private void Update()
+    {
+        HandleInput();
+        if (_isMoving)
+            Move();
+    }
 
-	bool CheckPath(Vector2 dir)
-	{
-		float rayDistance = 1f; // 레이 길이
-		RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, rayDistance,
-			LayerMask.GetMask(LayerName.Interactive.ToString(), LayerName.Villain.ToString(), LayerName.Customer.ToString())); 
-		if (hit.collider != null) 
-			return false;
-		return true;
-	}
+    private void HandleInput()
+    {
+        float horizontalInput = Input.GetAxisRaw("Horizontal");
+        float verticalInput = Input.GetAxisRaw("Vertical");
 
-	private IEnumerator CoMovePossible()
-	{
-		while (true)
-		{
-			yield return null;
-			if (_isMoving)
-				continue;
-			yield return new WaitForSeconds(1 / moveSpeed);
-			_isMoving = true;
-		}
-	}
+        if (horizontalInput != 0 && verticalInput != 0)
+        {
+            if (horizontalInput > verticalInput)
+                verticalInput = 0;
+            else
+                horizontalInput = 0;
+        }
 
-	public void SetItem(Carryable item)
-	{
-		item.maxCount = maxStorage;
-		if (carriedItem)
-		{
-			if (item) DestroyImmediate(item.gameObject);
-		}
-		else
-		{
-			carriedItem = item;
-			item.transform.SetParent(transform);
-			item.transform.localPosition = new Vector3(0, -0.1f, 0);
-		}
-	}
-	
-	public void DropItem()
-	{
-		if (!carriedItem)
-			return;
-		carriedItem.transform.SetParent(null);
-		carriedItem = null;
-	}
-	
+        _moveDir = new Vector2(horizontalInput, verticalInput).normalized;
+    }
+
+    private void Move()
+    {
+        if (GameManager.Instance.isPause || _moveDir == Vector2.zero)
+            return;
+        TriggerAnimation(_moveDir);
+        
+        if (!CheckPath(_moveDir))
+            return;
+
+        transform.position += new Vector3(_moveDir.x, _moveDir.y, 0);
+        _isMoving = false;
+    }
+
+    private void TriggerAnimation(Vector2 dir)
+    {
+        string currentClip = anim.GetCurrentAnimatorClipInfo(0)[0].clip.name;
+
+        if (dir == Vector2.up && !currentClip.Equals("PlayerUp"))
+            anim.SetTrigger("UpTrigger");
+        else if (dir == Vector2.down && !currentClip.Equals("PlayerDown"))
+            anim.SetTrigger("DownTrigger");
+        else if (dir == Vector2.left && !currentClip.Equals("PlayerLeft"))
+            anim.SetTrigger("LeftTrigger");
+        else if (dir == Vector2.right && !currentClip.Equals("PlayerRight"))
+            anim.SetTrigger("RightTrigger");
+    }
+
+    private bool CheckPath(Vector2 dir)
+    {
+        float rayDistance = 1f;
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, rayDistance,
+            LayerMask.GetMask(LayerName.Interactive.ToString(), LayerName.Villain.ToString(), LayerName.Customer.ToString())); 
+        return hit.collider == null;
+    }
+
+    private IEnumerator CoMovePossible()
+    {
+        while (true)
+        {
+            if (_isMoving)
+            {
+                yield return null;
+                continue;
+            }
+            yield return new WaitForSeconds(1 / moveSpeed);
+            _isMoving = true;
+        }
+    }
+
+    public void SetItem(Carryable item)
+    {
+        item.maxCount = maxStorage;
+        if (carriedItem)
+            DestroyItemIfCarried(item);
+        else
+        {
+            carriedItem = item;
+            AttachItemToPlayer(item);
+        }
+    }
+
+    private void DestroyItemIfCarried(Carryable item)
+    {
+        if (item)
+            DestroyImmediate(item.gameObject);
+    }
+
+    private void AttachItemToPlayer(Carryable item)
+    {
+        item.transform.SetParent(transform);
+        item.transform.localPosition = new Vector3(0, -0.1f, 0);
+    }
 }

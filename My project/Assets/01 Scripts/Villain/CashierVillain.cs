@@ -30,7 +30,7 @@ public class CashierVillain : Villain, CashierDeskInteractable
     {
         isDestroy = true;
         base.Destroy();
-        if (GameManager.Instance.cashierDesk.guest != this)
+        if ((CashierVillain)GameManager.Instance.cashierDesk.guest != this)
             return;
         GameManager.Instance.cashierDesk.isInteractable = true;
         GameManager.Instance.cashierDesk.cashierTable.isInteractable = true;

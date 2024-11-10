@@ -170,7 +170,7 @@ public class CashierDesk : InteractiveObject, Creatable
 
 	private void AssignTableToCustomer(Customer customer, DiningTable table)
 	{
-		if (customer == null || table == null || customer.food.CurrentCount < customer.requiredCount)
+		if (customer == null || table == null || customer.food == null || customer.food.CurrentCount < customer.requiredCount)
 			return;
 		customer.PickTable(table);
 		customer.GoToTable();

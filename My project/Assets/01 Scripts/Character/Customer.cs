@@ -1,27 +1,21 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class Customer : MonoBehaviour, CashierDeskInteractable, DiningTableInteractable
 {
-	// TODO : 다른 객체가 생성해줘야함
 	public Food food;
 	public DiningTable table;
 	public int requiredCount;
 	public Vector2Int requiredRange;
 
-	private Collider2D _coll;
-
 	public int CurrentCount { get; private set; }
-
 
 	private void Awake()
 	{
 		CurrentCount = 0;
 		requiredCount = Random.Range(requiredRange.x, requiredRange.y + 1);
-		_coll = GetComponent<Collider2D>();
 	}
 
 	public void IncreaseFood()
@@ -56,26 +50,12 @@ public class Customer : MonoBehaviour, CashierDeskInteractable, DiningTableInter
 	{
 		if (!Mathf.Approximately(dir.magnitude, 1))
 			return;
-		Vector3 nextPosition = transform.position + (Vector3)dir;
-		Physics2D.IgnoreCollision(_coll, _coll, true); // Raycast 전에 설정
-		// RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, 1f, LayerMask.GetMask(
-		// 	LayerName.Customer.ToString(), LayerName.Player.ToString(), LayerName.Villain.ToString()));
-		//
 		
 		RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, dir, 1f, LayerMask.GetMask(
 			LayerName.Customer.ToString(), LayerName.Player.ToString(), LayerName.Villain.ToString()));
 
-
-		bool isHit = false;
-		foreach (RaycastHit2D hit in hits)
-		{
-			if (hit.collider == null || hit.collider.gameObject == gameObject)
-				continue;
-			isHit = true;
-			break;
-		}
-		if (!isHit)
-			transform.position = nextPosition;
+		if (!hits.Any(hit => hit.collider != null && hit.collider.gameObject != gameObject))
+			transform.position += (Vector3)dir;
 	}
 
 	private IEnumerator MoveRoutine()
