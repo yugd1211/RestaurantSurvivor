@@ -10,14 +10,8 @@ public class VillainManager : Singleton<VillainManager>, Creatable
 	public float countertopVillainCreateTime = 30f; 
 	public float safeBoxVillainCreateTime = 30f;
 
-	private bool _isFirstSpawn = false;
-	private Villain _villain;
+	public Villain villain;
 	private float _villainDeleteTime = 0f;
-	public Villain villain
-	{
-		get => _villain;
-		set => _villain = value;
-	}
 	public int currIndex =  1;
 
 	private void Start()
@@ -28,11 +22,11 @@ public class VillainManager : Singleton<VillainManager>, Creatable
 		safeBoxVillainCreateTime = int.MaxValue;
 	}
 	
-	private void SetCreateRandomTime()
+	private void ResetVillainCreateTimes()
 	{
 		cashierVillainCreateTime = Random.Range(30f, 45f);
 		countertopVillainCreateTime = Random.Range(30f, 45f);
-		safeBoxVillainCreateTime = Random.Range(45f, 60f);
+		safeBoxVillainCreateTime = Random.Range(30f, 45f);
 	}
 	
 	private void Update()
@@ -40,56 +34,39 @@ public class VillainManager : Singleton<VillainManager>, Creatable
 		if (villain != null)
 			return;
 		_villainDeleteTime += Time.deltaTime;
-		if (_villainDeleteTime >= safeBoxVillainCreateTime)
+		if (_villainDeleteTime >= safeBoxVillainCreateTime && TrySpawnVillain<SafeBoxVillain>())
+			return;
+		if (_villainDeleteTime >= cashierVillainCreateTime && GameManager.Instance.cashierDesk.guest == null && TrySpawnVillain<CashierVillain>())
+			return;
+		if (_villainDeleteTime >= countertopVillainCreateTime && TrySpawnVillain<CountertopVillain>())
+			return;
+	}
+	
+	private void CreateAndMoveVillain(int index)
+	{
+		currIndex = index;
+        Create();
+        villain.MoveTo();
+    }
+	
+	private bool TrySpawnVillain<T>() where T : Villain
+	{
+		for (int i = 0; i < villainPrefab.Length; i++)
 		{
-			for (int i = 0; i < villainPrefab.Length; i++)
+			if (villainPrefab[i] is T)
 			{
-				if (villainPrefab[i] as SafeBoxVillain)
-				{
-					currIndex = i;
-					Create();
-					villain.MoveTo();
-					return;
-				}
+				CreateAndMoveVillain(i);
+				return true;
 			}
 		}
-		if (_villainDeleteTime >= cashierVillainCreateTime)
-		{
-			for (int i = 0; i < villainPrefab.Length; i++)
-			{
-				if (villainPrefab[i] is not CashierVillain || GameManager.Instance.cashierDesk.guest != null)
-					continue;
-				currIndex = i;
-
-				Create();
-				villain.MoveTo();
-				return;
-			}
-		}
-		if (_villainDeleteTime >= countertopVillainCreateTime)
-		{
-			for (int i = 0; i < villainPrefab.Length; i++)
-			{
-				if (villainPrefab[i] as CountertopVillain)
-				{
-					currIndex = i;
-					Create();
-					villain.MoveTo();
-					return;
-				}
-			}
-		}
-
-
+		return false;
 	}
 
 	public bool GetVillain<T>(out Villain villain)
 	{
+		villain = null;
 		if (this.villain)
-		{ 
-			villain = null;
 			return false;
-		}
 		for (int i = 0; i < villainPrefab.Length; i++)
 		{
 			if (villainPrefab[i] is T)
@@ -100,7 +77,6 @@ public class VillainManager : Singleton<VillainManager>, Creatable
 				return true;
 			}
 		}
-		villain = null;
 		return false;
 	}
 
@@ -109,8 +85,7 @@ public class VillainManager : Singleton<VillainManager>, Creatable
 		if (villain != null)
 			return;
 		_villainDeleteTime = 0;
-		_isFirstSpawn = true;
-		SetCreateRandomTime();
+		ResetVillainCreateTimes();
 		villain = Instantiate(villainPrefab[currIndex]);
 	}
 }

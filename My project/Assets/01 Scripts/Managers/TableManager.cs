@@ -9,13 +9,11 @@ public class TableManager : Singleton<TableManager>
 	public List<DiningTable> tables;
 	public List<DiningTable> availableTables;
 
-	public bool GetTable(out DiningTable outTable)
+	public bool GetTable(out DiningTable outTable )
 	{
+		outTable = null;
 		if (availableTables.Count == 0)
-		{
-			outTable = null;
 			return false;
-		}
 		outTable = availableTables[0];
 		availableTables.RemoveAt(0);
 		return true;
@@ -35,22 +33,20 @@ public class TableManager : Singleton<TableManager>
 	private void UpdateAvailableTables()
 	{
 		RetrieveOccupiedTable();
-		tables.ForEach(table =>
-			{
-				if (table.IsAvailable() && !availableTables.Contains(table))
-					availableTables.Add(table);
-			}
-		);
+    
+		foreach (var table in tables)
+		{
+			if (table.IsAvailable() && !availableTables.Contains(table))
+				availableTables.Add(table);
+		}
 	}
 
 	private void RetrieveOccupiedTable()
 	{
-		tables.ForEach
-		(table =>
-			{
-				if ((table.isOccupied && table.Guest == null))
-					table.isOccupied = false;
-			}
-		);
+		foreach (DiningTable table in tables)
+		{
+			if (table.isOccupied && table.Guest == null)
+				table.isOccupied = false;
+		}
 	}
 }

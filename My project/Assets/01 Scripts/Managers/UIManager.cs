@@ -15,10 +15,12 @@ public class UIManager : Singleton<UIManager>
 	{
 		pausePanel = GameObject.Find("PausePanel");
 		updgadePanel = GameObject.Find("UpgradePanel");
+		warningUI = GameObject.Find("WarningUI");
+		
 		GameObject.Find("ResumePanel").GetComponentInChildren<Button>().onClick.AddListener(Resume);
 		GameObject.Find("GameOverPanel").GetComponentInChildren<Button>().onClick.AddListener(GameOver);
 		GameObject.Find("PauseUI").GetComponentInChildren<Button>().onClick.AddListener(Pause);
-		warningUI = GameObject.Find("WarningUI");
+		
 		warningUI.SetActive(false);
 		pausePanel.SetActive(false);
 		updgadePanel.SetActive(false);
@@ -33,35 +35,34 @@ public class UIManager : Singleton<UIManager>
 			else
 				Pause();
 		}
-		if (VillainManager.Instance.villain)
-			warningUI.SetActive(true);
-		else
-			warningUI.SetActive(false);
+		SetWarningUI(VillainManager.Instance.villain != null);
+	}
+	
+	private void SetWarningUI(bool isActive)
+	{
+		if (warningUI != null)
+			warningUI.SetActive(isActive);
 	}
 	
 	private void Pause()
 	{
-		GameManager.Instance.isPause = true;
-		Time.timeScale = 0;
+		GameManager.Instance.Pause();
 		pausePanel.gameObject.SetActive(true);
 	}
 	
 	public void OpenUpgradePanel()
 	{
-		// print("OpenUpgradePanel");
-		GameManager.Instance.isPause = true;
+		GameManager.Instance.Pause();
 		updgadePanel.SetActive(true);
-		Time.timeScale = 0;
 	}
 	
 	private void Resume()
 	{
-		GameManager.Instance.isPause = false;
-		Time.timeScale = 1;
-		CloesePanel();
+		GameManager.Instance.Resume();
+		CloseAllPanel();
 	}
 
-	public void CloesePanel()
+	private void CloseAllPanel()
 	{
 		updgadePanel.SetActive(false);
 		pausePanel.SetActive(false);
@@ -75,4 +76,5 @@ public class UIManager : Singleton<UIManager>
 		        Application.Quit();
 		#endif
 	}
+	
 }

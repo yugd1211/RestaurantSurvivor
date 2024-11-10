@@ -7,13 +7,11 @@ public class GameManager : Singleton<GameManager>
 	public bool isPause = false;
 	public SafeBox safeBox;
 	public CashierDesk cashierDesk;
-	public CustomerSpawner customerSpawner; 
 	public Countertop[] countertops;
 
 	protected override void Awake()
 	{
 		base.Awake();
-		customerSpawner = GetComponent<CustomerSpawner>();
 		player = FindObjectOfType<Player>();
 	}
 
@@ -21,5 +19,17 @@ public class GameManager : Singleton<GameManager>
 	{
 		cashierDesk = FindObjectOfType<CashierDesk>(); 
 		countertops = FindObjectsByType<Countertop>(FindObjectsSortMode.None);
+	}
+
+	public void Pause()
+	{
+		Time.timeScale = 0;
+		isPause = true;
+	}
+	
+	public void Resume()
+	{
+		Time.timeScale = 1;
+		isPause = false;
 	}
 }
