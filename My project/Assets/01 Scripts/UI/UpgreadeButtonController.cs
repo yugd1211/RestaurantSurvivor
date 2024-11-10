@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -40,67 +38,53 @@ public class GridList<T>
             gridNodes[1, i] = new GridListNode<T>(row2Elements[i]);
         }
 
+        SetNodeConnections(rowCount, colCount);
+
+        currentNode = gridNodes[0, 0];
+    }
+
+    private void SetNodeConnections(int rowCount, int colCount)
+    {
         for (int row = 0; row < rowCount; row++)
         {
             for (int col = 0; col < colCount; col++)
             {
-                if (gridNodes[row, col] == null) continue;
-
-                if (col > 0 && gridNodes[row, col - 1] != null)
+                if (gridNodes[row, col] == null)
+                    continue;
+                GridListNode<T> currNode = gridNodes[row, col];
+                GridListNode<T> leftNode = col > 0 ? gridNodes[row, col - 1] : null;
+                GridListNode<T> topNode = row > 0 ? gridNodes[row - 1, col] : null;
+                
+                if (leftNode != null)
                 {
-                    gridNodes[row, col].Left = gridNodes[row, col - 1];
-                    gridNodes[row, col - 1].Right = gridNodes[row, col];
+                    currNode.Left = leftNode;
+                    leftNode.Right = currNode;
                 }
-
-                if (row > 0 && gridNodes[row - 1, col] != null)
+                if (topNode != null)
                 {
-                    gridNodes[row, col].Top = gridNodes[row - 1, col];
-                    gridNodes[row - 1, col].Bottom = gridNodes[row, col];
+                    currNode.Top = topNode;
+                    topNode.Bottom = currNode;
                 }
             }
         }
-
-        currentNode = gridNodes[0, 0];
     }
 
 
     public void Move(Vector2 dir)
     {
-        if (dir == Vector2.up)
-            MoveUp();
-        else if (dir == Vector2.down)
-            MoveDown();
-        else if (dir == Vector2.left)
-            MoveLeft();
-        else if (dir == Vector2.right)
-            MoveRight();
-    }
-    
-    private void MoveUp()
-    {
-        if (currentNode.Top != null)
+        if (dir == Vector2.up && currentNode.Top != null)
             currentNode = currentNode.Top;
-    }
-    private void MoveDown()
-    {
-        if (currentNode.Bottom != null)
+        else if (dir == Vector2.down && currentNode.Bottom != null)
             currentNode = currentNode.Bottom;
-    }
-    private void MoveLeft()
-    {
-        if (currentNode.Left != null)
+        else if (dir == Vector2.left && currentNode.Left != null)
             currentNode = currentNode.Left;
-    }
-    private void MoveRight()
-    {
-        if (currentNode.Right != null)
+        else if (dir == Vector2.right && currentNode.Right != null)
             currentNode = currentNode.Right;
     }
 }
 public class UpgreadeButtonController : MonoBehaviour
 {
     public GameObject cursor;
-    public List<List<UpgradeButton>> upgradeButton;
     private GridList<UpgradeButton> _gridList;
 
     private void Start()
