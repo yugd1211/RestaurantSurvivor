@@ -15,6 +15,7 @@ public class VillainManager : Singleton<VillainManager>, Creatable
 	private void Start()
 	{
 		_villainDeleteTime = -30;
+		_villainDeleteTime = -0;
 		cashierVillainCreateTime = 30;
 		countertopVillainCreateTime = 30;
 		safeBoxVillainCreateTime = int.MaxValue;

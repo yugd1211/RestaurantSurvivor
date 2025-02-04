@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CashierVillain : Villain, CashierDeskInteractable
@@ -13,6 +10,7 @@ public class CashierVillain : Villain, CashierDeskInteractable
             return;
         base.Update();
     }
+    
     public override void MoveTo()
     {
         if (GameManager.Instance.cashierDesk.guest != null)
@@ -28,8 +26,8 @@ public class CashierVillain : Villain, CashierDeskInteractable
 
     protected override void Destroy()
     {
-        isDestroy = true;
         base.Destroy();
+        isDestroy = true;
         if ((CashierVillain)GameManager.Instance.cashierDesk.guest != this)
             return;
         GameManager.Instance.cashierDesk.isInteractable = true;

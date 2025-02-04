@@ -49,7 +49,7 @@ public class CashierTable : InteractiveObject, Creatable
 			if (food.CurrentCount >= food.maxCount)
 				break;
 			food.Increase();
-			playerFood.DeCrease();
+			playerFood.Decrease();
 		}
 	}
 }

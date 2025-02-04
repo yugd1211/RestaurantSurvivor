@@ -29,14 +29,10 @@ public class GridList<T>
         gridNodes = new GridListNode<T>[rowCount, colCount];
 
         for (int i = 0; i < row1Elements.Count; i++)
-        {
             gridNodes[0, i] = new GridListNode<T>(row1Elements[i]);
-        }
 
         for (int i = 0; i < row2Elements.Count; i++)
-        {
             gridNodes[1, i] = new GridListNode<T>(row2Elements[i]);
-        }
 
         SetNodeConnections(rowCount, colCount);
 
@@ -68,7 +64,6 @@ public class GridList<T>
             }
         }
     }
-
 
     public void Move(Vector2 dir)
     {

@@ -1,32 +1,38 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class Villain : MonoBehaviour
 {
 	protected float DeleteTime = 3f;
 	private Player _player;
+	private float _playerSearchTime = 0f;
 	
 	protected readonly Vector2[] SearchDirs = new Vector2[]
 	{
 		Vector2.up, Vector2.down, Vector2.left, Vector2.right, 
-		Vector2.up + Vector2.left, Vector2.up + Vector2.right, Vector2.down + Vector2.left, Vector2.down + Vector2.right
+		Vector2.up + Vector2.left, Vector2.up + Vector2.right,
+		Vector2.down + Vector2.left, Vector2.down + Vector2.right
 	};
-	private float _playerSearchTime = 0f;
 	
 	protected virtual void Update()
+	{
+		CheckPlayerContact();
+		CheckDestroyTime();
+	}
+
+	private void CheckPlayerContact()
 	{
 		if (SearchPlayer())
 			_playerSearchTime += Time.deltaTime;
 		else
 			_playerSearchTime = 0;
-		if (DeleteTime / (_player == null ? 1 : _player.villainDefense) <= _playerSearchTime)
-		{
-			Destroy();
-		}
 	}
-
+	
+	private void CheckDestroyTime()
+	{
+		if (DeleteTime / (_player == null ? 1 : _player.villainDefense) <= _playerSearchTime)
+			Destroy();
+	}
+	
 	protected virtual void Destroy()
 	{
 		VillainManager.Instance.villain = null;
@@ -40,13 +46,9 @@ public abstract class Villain : MonoBehaviour
 		foreach (Vector2 dir in SearchDirs)
 		{
 			RaycastHit2D hit = Physics2D.Raycast(
-				transform.position, dir, 1f, 
-				LayerMask.GetMask(LayerName.Player.ToString()));
-			if (hit.collider)
-			{
-				_player = hit.collider.GetComponent<Player>();
+				transform.position, dir, 1f, LayerMask.GetMask(LayerName.Player.ToString()));
+			if (hit.collider&& hit.collider.TryGetComponent(out _player))
 				return true;
-			}
 		}
 		return false;
 	}

@@ -94,7 +94,7 @@ public class Countertop : InteractiveObject, Creatable
 			if (_createFoodCoroutine == null)
 				_createFoodCoroutine = StartCoroutine(CreateFoodCoroutine());
 		
-			_food.DeCrease();
+			_food.Decrease();
 		}
 	}
 	

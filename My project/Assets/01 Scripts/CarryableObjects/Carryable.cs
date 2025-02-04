@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Carryable : MonoBehaviour
@@ -18,12 +16,10 @@ public class Carryable : MonoBehaviour
 		CurrentCount++;
 	}
 	
-	public virtual void DeCrease()
+	public virtual void Decrease()
 	{
 		CurrentCount--;
 		if (CurrentCount <= 0)
-		{
 			Destroy(gameObject);
-		}
 	}
 }

@@ -78,7 +78,7 @@ public class CashierDesk : InteractiveObject, Creatable
 			if (_money.CurrentCount <= 0)
 				return;
 			playerMoney.Increase(); 
-			_money.DeCrease();
+			_money.Decrease();
 		}
 	}
 	
@@ -154,7 +154,7 @@ public class CashierDesk : InteractiveObject, Creatable
 	private void Sale(Customer customer)
 	{
 		_money.Increase();
-		cashierTable.food.DeCrease();
+		cashierTable.food.Decrease();
 		customer.IncreaseFood();
 	}
 

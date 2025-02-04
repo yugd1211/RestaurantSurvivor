@@ -91,7 +91,7 @@ public class DiningTable : InteractiveObject, Creatable
 				break;
 
 			playerTrash.Increase();
-			tableTrash.DeCrease();
+			tableTrash.Decrease();
 		}
 	}
 
@@ -122,7 +122,7 @@ public class DiningTable : InteractiveObject, Creatable
 			for (int i = 0; i < deleteCount; i++)
 			{
 				if (food.CurrentCount > 0)
-					food.DeCrease();
+					food.Decrease();
 			}
 		}
 	}

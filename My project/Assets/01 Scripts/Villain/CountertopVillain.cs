@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -25,12 +22,12 @@ public class CountertopVillain : Villain
     }
     protected override void Destroy()
     {
+        base.Destroy();
         isDestroy = true;
         if (_interactiveObject != null)
         {
             _interactiveObject.isInteractable = true;
         }
-        base.Destroy();
     }
 
     public override void MoveTo()

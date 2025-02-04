@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.Rendering;
 using UnityEngine;
 
 public class DiningTableVillain : Villain, DiningTableInteractable
@@ -30,12 +27,12 @@ public class DiningTableVillain : Villain, DiningTableInteractable
     
     protected override void Destroy()
     {
+        base.Destroy();
         isDestroy = true;
         if (diningTable != null)
         {
             diningTable.isOccupied = false;
             diningTable.isInteractable = true;
         }
-        base.Destroy();
     }
 }

@@ -9,8 +9,6 @@ public class Player : MonoBehaviour
     public Animator anim;
     public Carryable carriedItem;
 
-    private Coroutine _moveCoroutine;
-    private CashierTable _cashierTable;
     private Vector2 _moveDir;
     private bool _isMoving = true;
 
@@ -18,13 +16,11 @@ public class Player : MonoBehaviour
     {
         moveSpeed = 2f;
         anim = GetComponent<Animator>();
-        _cashierTable = FindObjectOfType<CashierTable>();
     }
 
     private void Start()
     {
-        _moveCoroutine = StartCoroutine(CoMovePossible());
-        _cashierTable = FindObjectOfType<CashierTable>();
+        StartCoroutine(CoMovePossible());
     }
 
     private void Update()
